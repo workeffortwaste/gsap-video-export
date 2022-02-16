@@ -1,8 +1,8 @@
 # gsap-video-export
 
-_Expertly export GreenSock (GSAP) animation to video._
+_Expertly and easily export GreenSock (GSAP) animation to video._
 
-`gsap-video-export` is a simple tool for exporting your [GreenSock (GSAP)](https://www.greensock.com) animations to video file. Create video animations with the framework you know and love and share them on social media with ease.
+`gsap-video-export` is a simple tool for exporting your [GreenSock (GSAP)](https://www.greensock.com) animations to video. Create video animations with the framework you know and love and use them in your video projects or share them on social media with ease.
 
 > **Support this project** <br/> Help support the work that goes into creating and maintaining my projects and buy me a coffee via [Ko-fi](https://ko-fi.com/defaced) or sponsor me on [GitHub Sponsors](https://github.com/sponsors/workeffortwaste/).
 
@@ -20,11 +20,11 @@ npm install -g gsap-video-export
 
 Once installed the tool can be used as per the following example.
 
-> The page must contain a GSAP animation. CodePen URLs will be magically broken out of their iFrames.
-
 ```
 gsap-video-export <url>
 ```
+
+> When using CodePen URLs `gsap-video-export` will automatically break them out of their iframe.
 
 ### Options
 
@@ -52,7 +52,7 @@ Options:
 
 ### Page Export
 
-Supplying `gsap-video-export` with an URL will generate a `1920x1080` video file of the viewport scrubbing through the GSAP global timeline object.
+Supplying `gsap-video-export` with a URL will generate a `1920x1080` video file of the viewport, scrubbing through the GSAP global timeline object at `60fps`.
 
 ```bash
 # Animation by @cassiecodes
@@ -63,9 +63,9 @@ https://user-images.githubusercontent.com/49479599/154277839-551542f6-9236-48cf-
 
 ### Custom Timeline
 
-By default `gsap-video-export` will scrub through the global GSAP timeline object. There may be instances where you want to specify which timeline you want to record.
+By default `gsap-video-export` will scrub through the global GSAP timeline object, although there may be instances where you want to specify which timeline you want to record.
 
-In this example the global timeline fails due an infinite loop.
+In the example below the global timeline fails due an infinite loop.
 
 ```bash
 # Animation by @SeeMax
@@ -83,9 +83,9 @@ https://user-images.githubusercontent.com/49479599/154277884-148c21b5-2d23-48bf-
 
 ### Export Element
 
-With the `--selector` `-S` argument you can specific a DOM selector to capture a specific element. The resulting video will be the same dimensions as the as the selected element.
+With the `--selector` `-S` argument you can specifiy a DOM selector to capture a specific element. The resulting output video will be the same dimensions as the as the selected element.
 
-`gsap-video-export` also allows you to run custom JavaScript on the page before the capture begins with the `--script` `-s` argument. In this example a `custom.js` file is supplied with a snippet to remove the corner banner from the DOM.
+`gsap-video-export` also allows you to run custom JavaScript on the page before the video capture begins with the `--script` `-s` argument. In this example a `custom.js` file is supplied with a snippet to remove the corner banner from the DOM.
 
 ```js
 // custom.js
@@ -105,7 +105,7 @@ https://user-images.githubusercontent.com/49479599/154277903-fd6cfa40-af95-4ef9-
 
 It's possible to easily export videos for social media such as Twitter. Using the default settings `gsap-video-export` will automatically output video in a format that conforms to Twitter's video specifications.
 
-To render your video to the desired resolution use the `--resolution` `-v` argument with a `<width>x<height>` string. For Twitter I recommend using `1080x1080`.
+To render your video at the desired resolution use the `--resolution` `-v` argument with a `<width>x<height>` string. For Twitter I recommend using `1080x1080`.
 
 ```bash
 # Video by @cassiecodes
@@ -114,7 +114,7 @@ https://codepen.io/cassie-codes/pen/mNWxpL -S svg -v 1080x1080
 
 The example above will select the `SVG` element on the page, with the resulting video resized and automatically padded to `1080x1080`.
 
-As the `SVG` element itself is not 1080 pixels in either direction it will ultimately be scaled up to hit the target resolution.
+As the `SVG` element itself is not 1080 pixels in either direction it will ultimately be scaled up to hit the target resolution losing quality.
 
 Using the `--scale` `-z` you can supply a scale factor allowing you to capture the element at a much higher resolution resulting in better video quality.
 
