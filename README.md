@@ -30,7 +30,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 ### Installation
 
-`gsap-video-export` is a command line tool that can be installed directly from NPM.
+`gsap-video-export` is a command line tool that can be installed directly via NPM.
 
 ```
 npm install -g gsap-video-export
