@@ -63,6 +63,8 @@ Supplying `gsap-video-export` with an URL will generate a `1920x1080` video file
 gsap-video-export https://codepen.io/cassie-codes/pen/RwGEewq
 ```
 
+https://user-images.githubusercontent.com/49479599/154277839-551542f6-9236-48cf-b3e1-b55484475e22.mp4
+
 ### Custom Timeline
 
 By default `gsap-video-export` will scrub through the global GSAP timeline object. There may be instances where you want to specify which timeline you want to record.
@@ -81,6 +83,8 @@ Using the `--timeline` `-t` argument you can specify a different timeline variab
 gsap-video-export https://codepen.io/SeeMax/pen/bGoxMwj -t tl
 ```
 
+https://user-images.githubusercontent.com/49479599/154277884-148c21b5-2d23-48bf-8e2f-5321c64c0c62.mp4
+
 ### Export Element
 
 With the `--selector` `-S` argument you can specific a DOM selector to capture a specific element. The resulting video will be the same dimensions as the as the selected element.
@@ -96,6 +100,8 @@ document.querySelector('img[alt="HTML5"]').remove()
 # Animation by GreenSock
 gsap-video-export https://codepen.io/GreenSock/pen/DzXpme -S "#featureBox" -s custom.js 
 ```
+
+https://user-images.githubusercontent.com/49479599/154277903-fd6cfa40-af95-4ef9-83c6-89db2e8a098a.mp4
 
 ### Twitter Export
 
@@ -121,6 +127,8 @@ Using the `--scale` `-z` you can supply a scale factor allowing you to capture t
 https://codepen.io/cassie-codes/pen/mNWxpL -S svg -v 1080x1080 -z 2
 ```
 
+https://user-images.githubusercontent.com/49479599/154277921-0c5dfb39-9012-43c8-ac76-416a95c9bab0.mp4
+
 ### Coloured Background
 
 `gsap-video-export` will automatically detect the background colour to autopad the animation with.
@@ -132,8 +140,7 @@ https://codepen.io/cassie-codes/pen/mNWxpL -S svg -v 1080x1080 -z 2
 https://codepen.io/cassie-codes/pen/VwZBjRq -S svg -z 2 -v 1080x1080
 ```
 
-
-
+https://user-images.githubusercontent.com/49479599/154277938-1db498b8-661b-4772-ad56-a50964d5c93e.mp4
 
 ### Lossless* Export
 
@@ -145,6 +152,8 @@ The `--output-options` `-E` argument will take a double quoted string of FFmpeg 
 # Video by @cassiecodes
 gsap-video-export https://codepen.io/cassie-codes/pen/VweQjBw -S svg -z 2 -v 1920x1080 -E '"-pix_fmt yuv420p -crf 1"'
 ```
+
+https://user-images.githubusercontent.com/49479599/154278049-ae6d585b-9491-45a8-bd2a-ea1f741580e2.mp4
 
 ## FAQ
 
