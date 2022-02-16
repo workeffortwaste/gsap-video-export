@@ -45,7 +45,7 @@ const colors = {
 }
 
 /* CLI welcome message */
-const { version } = JSON.parse(fs.readFileSync('./package.json'))
+const { version } = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url)))
 console.log(`gsap-video-export ${version} / ${colors.blue}@defaced${colors.reset}`)
 
 /* Support */
