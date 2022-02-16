@@ -8,6 +8,24 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 > **Support this project** <br/> Help support the work that goes into creating and maintaining my projects and buy me a coffee via [Ko-fi](https://ko-fi.com/defaced) or sponsor me on [GitHub Sponsors](https://github.com/sponsors/workeffortwaste/).
 
+## Contents
+
+* [Getting Started](#getting-started)
+  * [Installation](#installation)
+  * [Usage](#usage)
+  * [Options](#options)
+* [Examples](#examples)
+  * [Page Export](#page-export)
+  * [Custom Timeline](#custom-timeline)
+  * [Export Element](#export-element)
+  * [Twitter Export](#twitter-export)
+  * [Coloured Background](#coloured-background)   
+  * [Lossless Export](#lossless-export)
+* [FAQ](#faq)
+* [Sponsors](#sponsors)
+  * [Bonus](#bonus)
+* [Author](#author)   
+
 ## Getting Started
 
 ### Installation
