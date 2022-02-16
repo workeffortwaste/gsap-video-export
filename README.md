@@ -4,6 +4,8 @@ _Expertly and easily export GreenSock (GSAP) animation to video._
 
 `gsap-video-export` is a simple tool for exporting your [GreenSock (GSAP)](https://www.greensock.com) animations to video. Create video animations with the framework you know and love and use them in your video projects or share them on social media with ease.
 
+What makes `gsap-video-export` different from other solutions is rather than simply recording an animation as it plays, it instead steps through exporting frame by frame to ensure the result is seamless.
+
 > **Support this project** <br/> Help support the work that goes into creating and maintaining my projects and buy me a coffee via [Ko-fi](https://ko-fi.com/defaced) or sponsor me on [GitHub Sponsors](https://github.com/sponsors/workeffortwaste/).
 
 ## Getting Started
@@ -24,7 +26,7 @@ Once installed the tool can be used as per the following example.
 gsap-video-export <url>
 ```
 
-> When using CodePen URLs `gsap-video-export` will automatically break them out of their iframe.
+> When using CodePen URLs `gsap-video-export` will automatically redirect to the full page debug preview.
 
 ### Options
 
