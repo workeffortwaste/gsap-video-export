@@ -29,10 +29,6 @@ gsap-video-export <url>
 ### Options
 
 ```
-gsap-video-export <url>
-
-Export GreenSock (GSAP) animation to video
-
 Options:
       --help            Show help                                                                    [boolean]
       --version         Show version number                                                          [boolean]
