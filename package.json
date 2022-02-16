@@ -1,0 +1,49 @@
+{
+  "name": "gsap-video-export",
+  "version": "1.0.0",
+  "description": "Export GreenSock (GSAP) animation to video.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "video",
+    "gsap",
+    "greensock",
+    "animation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/workeffortwaste/gsap-video-export.git"
+  },
+  "bin": {
+    "gsap-video-export": "index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/workeffortwaste/gsap-video-export/issues"
+  },
+  "homepage": "https://github.com/workeffortwaste/gsap-video-export",
+  "author": "Chris Johnson (https://defaced.dev)",
+  "license": "MIT",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "cli-progress": "^3.10.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "pngjs": "^6.0.0",
+    "puppeteer": "^13.1.1",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0",
+    "rgb-hex": "^4.0.0",
+    "string-argv": "^0.3.1",
+    "tmp": "^0.2.1",
+    "yargs": "^17.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0"
+  }
+}
