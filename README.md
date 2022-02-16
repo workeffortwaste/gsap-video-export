@@ -144,9 +144,9 @@ https://user-images.githubusercontent.com/49479599/154277938-1db498b8-661b-4772-
 
 ### Lossless* Export
 
->*When creating a video with the true lossless setting `-crf 0` it will preserve the colour space of the source PNGs and won't be compatible with some media players. <br><br>For compatibility simply setting the best lossly setting `-crf 1` is enough to create a near lossless video that's compatible with most media players.
+>*When creating a video with the true lossless setting `-crf 0` it will preserve the colour space of the source PNGs and won't be compatible with some media players. <br><br>For compatibility simply setting the best lossy setting `-crf 1` is enough to create a near lossless video that's compatible with most media players.
 
-The `--output-options` `-E` argument will take a double quoted string of FFmpeg output arguements to allow a lot of flexability over the final render.
+The `--output-options` `-E` argument will take a *double quoted string* of FFmpeg output arguements to allow a lot of flexability over the final render.
 
 ```bash
 # Video by @cassiecodes
