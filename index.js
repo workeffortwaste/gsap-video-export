@@ -76,6 +76,8 @@ const options = _yargs
   .describe('z', '[browser] Scale factor')
   .describe('V', '[browser] Viewport size')
   .describe('i', '[browser] Info only')
+  .describe('frame-start', '[browser] Start frame')
+  .describe('frame-end', '[browser] End frame')
   .describe('p', '[video] Auto padding color')
   .describe('c', '[video] Codec')
   .describe('e', '[video] FFmpeg input options')
@@ -359,14 +361,19 @@ const exportVideo = async () => {
   /* Print status text */
   console.log('\nExporting animation frames\n')
 
+  /* Set the start and end frames */
+  const startFrame = options['frame-start'] || 0
+  const endFrame = options['frame-end'] || duration
+
   /* Start the CLI export progress bar */
-  b1.start(duration, 0)
+  b1.start(endFrame, startFrame)
 
   /* Time frame export */
   const timeFrames = process.hrtime()
 
   /* Progress the animation and take a screenshot */
-  for (let x = 0; x < duration; x++) {
+  let frameStep = 0
+  for (let x = startFrame; x < endFrame; x++) {
     const frame = x / duration
 
     /* Progress the timeline to the specified frame */
@@ -376,11 +383,14 @@ const exportVideo = async () => {
     const el = options.selector === 'document' ? page : await page.$(options.selector)
 
     /* Take a screenshot */
-    await el.screenshot({ path: tmpobj.name + '/' + x + '.png' })
+    await el.screenshot({ path: tmpobj.name + '/' + frameStep + '.png' })
 
     /* Increment and update the CLI export progress bar */
     b1.increment()
     b1.update(x + 1)
+
+    /* Increment the frame step */
+    frameStep++
   }
 
   /* Time (stop) frame export */
@@ -393,7 +403,7 @@ const exportVideo = async () => {
   await browser.close()
 
   /* Read the first frame of the animation */
-  let png = PNG.sync.read(fs.readFileSync(tmpobj.name + '/0.png'))
+  let png = PNG.sync.read(fs.readFileSync(tmpobj.name + '/0' + '.png'))
 
   /* Get some basic image information for video rendering */
   /* By getting the resoution this way we can make a video of the output video size regardless of browser viewport and scaling settings */
