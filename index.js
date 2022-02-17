@@ -75,6 +75,7 @@ const options = _yargs
   .describe('t', '[browser] GSAP timeline object')
   .describe('z', '[browser] Scale factor')
   .describe('V', '[browser] Viewport size')
+  .describe('i', '[browser] Info only')
   .describe('p', '[video] Auto padding color')
   .describe('c', '[video] Codec')
   .describe('e', '[video] FFmpeg input options')
@@ -82,6 +83,7 @@ const options = _yargs
   .describe('o', '[video] Filename')
   .describe('f', '[video] Framerate')
   .describe('v', '[video] Output resolution')
+  .alias('i', 'info')
   .alias('o', 'output')
   .alias('t', 'timeline')
   .alias('f', 'fps')
@@ -347,6 +349,9 @@ const exportVideo = async () => {
 
   /* Print status text */
   console.log(padCenter('Frames', duration.toString(), false))
+
+  /* If the info flag is toggled exit cleanly */
+  if (options.info) await cleanExit(browser)
 
   /* Set up the tmp directory */
   const tmpobj = tmp.dirSync()
