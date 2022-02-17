@@ -57,10 +57,13 @@ Options:
   -t, --timeline        [browser] GSAP timeline object                              [string] [default: "gsap"]
   -z, --scale           [browser] Scale factor                                           [number] [default: 1]
   -V, --viewport        [browser] Viewport size                                [string] [default: "1920x1080"]
+  -i, --info            [browser] Info only
+      --frame-start     [browser] Start frame
+      --frame-end       [browser] End frame
   -p, --color           [video] Auto padding color                                  [string] [default: "auto"]
   -c, --codec           [video] Codec                                            [string] [default: "libx264"]
   -e, --input-options   [video] FFmpeg input options                                                  [string]
-  -E, --output-options  [video] FFmpeg output options           [string] [default: "-pix_fmt yuv420p -crf 18"]
+  -E, --output-options  [video] FFmpeg output options         [string] [default: ""-pix_fmt yuv420p -crf 18""]
   -o, --output          [video] Filename                                       [string] [default: "video.mp4"]
   -f, --fps             [video] Framerate                                               [number] [default: 60]
   -v, --resolution      [video] Output resolution                                   [string] [default: "auto"]
