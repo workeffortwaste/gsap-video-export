@@ -241,7 +241,7 @@ const urlHelper = (url) => {
   if (url.includes('//codepen.io/')) {
     /* Use regex groups to reformat the URL */
     const regex = /\/\/codepen.io\/(.*?)\/pen\/(.*?)(?:\/|\?|$)/g
-    const [match, user, id] = regex.exec(url)
+    const [match,, id] = regex.exec(url)
 
     /* Return the debug codepen url if a match is found */
     return match ? `https://cdpn.io/pen/debug/${id}` : url
