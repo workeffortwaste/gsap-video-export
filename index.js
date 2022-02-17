@@ -357,6 +357,9 @@ const exportVideo = async () => {
   /* Start the CLI export progress bar */
   b1.start(duration, 0)
 
+  /* Time frame export */
+  const timeFrames = process.hrtime()
+
   /* Progress the animation and take a screenshot */
   for (let x = 0; x < duration; x++) {
     const frame = x / duration
@@ -374,6 +377,9 @@ const exportVideo = async () => {
     b1.increment()
     b1.update(x + 1)
   }
+
+  /* Time (stop) frame export */
+  const timeFramesStop = process.hrtime(timeFrames)
 
   /* Stop the CLI export progress bar */
   b1.stop()
@@ -406,6 +412,9 @@ const exportVideo = async () => {
   console.log(padCenter('Output resolution', `${options.resolution === 'auto' ? '(auto) ' : ''}${finalResolution}`))
   console.log(padCenter('Padding color', `${options.color === 'auto' ? '(auto) ' : ''}#${padColor.toUpperCase()}`))
 
+  /* Timing vars */
+  let timeRender, timeRenderStop
+
   /* Encode the video */
   const render = ffmpeg()
     .addInput(tmpobj.name + '/%d.png')
@@ -418,6 +427,8 @@ const exportVideo = async () => {
     .on('start', function (commandLine) {
       console.log('\nRendering video\n')
       b1.start(100, 0)
+      /* Time render */
+      timeRender = process.hrtime()
     })
     .on('progress', function (progress) {
       b1.increment()
@@ -430,6 +441,13 @@ const exportVideo = async () => {
 
       /* Stop the timer */
       b1.stop()
+
+      /* Time (stop) render */
+      timeRenderStop = process.hrtime(timeRender)
+
+      console.log('\nTime elapsed\n')
+      console.log(padCenter('Export', ((timeFramesStop[0] * 1e9 + timeFramesStop[1]) / 1e9).toFixed(2).toString() + 's', false))
+      console.log(padCenter('Render', ((timeRenderStop[0] * 1e9 + timeRenderStop[1]) / 1e9).toFixed(2).toString() + 's', false))
 
       /* Success */
       console.log(`\nVideo succesfully exported as ${colors.blue}${options.output}`)
