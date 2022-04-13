@@ -14,6 +14,7 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 
 /* Misc */
 import tmp from 'tmp'
+import path from 'path'
 
 /* Video encoders */
 import { path as ffmpegPath } from '@ffmpeg-installer/ffmpeg'
@@ -236,11 +237,21 @@ const discoverTimeline = (timeline) => {
 }
 
 /**
- * An url helper primarily to break pens out of their iframe for capturing.
+ * An url helper primarily to break pens out of their iframe for capturing,
+ * and to format URLs correctly for local files.
  * @param {string} url
  * @returns {string}
  */
 const urlHelper = (url) => {
+  /* If the url doesn't begin with https:// or http://, then it's a local file and we need to format it for puppeteer. */
+  if (!url.startsWith('https://') && !url.startsWith('http://')) {
+    if (url.startsWith('file://')) return url /* The user has already formatted it as a file url */
+
+    /* Resolve the full dir of the file */
+    const file = path.resolve(process.cwd(), url)
+    return `file://${file}`
+  }
+
   /* If a standard pen url is found convert it to an URL that works with this tool */
   if (url.includes('//codepen.io/')) {
     /* Use regex groups to reformat the URL */
@@ -273,7 +284,7 @@ const exportVideo = async () => {
   console.log(`${options.url}\n`)
 
   /* Start the browser fullscreen in the background (headless) */
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--start-fullscreen'] })
+  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--allow-file-access-from-files', '--start-fullscreen'] })
   const page = await browser.newPage()
 
   /* Set the viewport and scale from the cli options */
