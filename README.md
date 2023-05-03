@@ -6,7 +6,7 @@ _Expertly and easily export GreenSock (GSAP) animation to video._
 
 What makes `gsap-video-export` different from other solutions is rather than simply recording an animation as it plays, it instead steps through exporting frame by frame to ensure the result is seamless.
 
-> **Support this project** <br/> Help support the work that goes into creating and maintaining my projects and buy me a coffee via [Ko-fi](https://ko-fi.com/defaced) or sponsor me on [GitHub Sponsors](https://github.com/sponsors/workeffortwaste/).
+> **Support this project** <br/> Help support the work that goes into creating and maintaining my projects and sponsor me via [GitHub Sponsors](https://github.com/sponsors/workeffortwaste/).
 
 ## Contents
 
