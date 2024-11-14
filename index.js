@@ -284,7 +284,7 @@ const exportVideo = async () => {
   console.log(`${options.url}\n`)
 
   /* Start the browser fullscreen in the background (headless) */
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--allow-file-access-from-files', '--start-fullscreen'] })
+  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--allow-file-access-from-files', '--kiosk'] })
   const page = await browser.newPage()
 
   /* Set the viewport and scale from the cli options */
@@ -310,7 +310,7 @@ const exportVideo = async () => {
   }
 
   /* Wait for a bit because GSAP takes a little bit of time to initialise and the script was missing it. */
-  page.waitForTimeout(2000)
+  await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)))
 
   /* Check the selector exists */
   const validSelector = await page.evaluate(discoverSelector, options.selector)
