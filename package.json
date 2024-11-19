@@ -36,6 +36,7 @@
     "puppeteer-extra-plugin-stealth": "^2.11.2",
     "rgb-hex": "^4.1.0",
     "string-argv": "^0.3.2",
+    "timeweb": "^0.3.2",
     "tmp": "^0.2.3",
     "yargs": "^17.7.2"
   },

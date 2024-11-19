@@ -282,6 +282,8 @@ const cleanExit = async (browser) => {
  */
 const exportVideo = async () => {
   console.log(`${options.url}\n`)
+  /* If we're using the browser advance we can't use stealth */
+  if (options.advance === 'gsap') puppeteer.use(StealthPlugin())
 
   /* Start the browser fullscreen in the background (headless) */
   const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--allow-file-access-from-files', '--kiosk'] })
@@ -289,6 +291,15 @@ const exportVideo = async () => {
 
   /* Set the viewport and scale from the cli options */
   await page.setViewport({ width: resolutions.viewportWidth, height: resolutions.viewportHeight, deviceScaleFactor: options.scale })
+
+  /* Pause animations */
+  if (options.advance === 'timeweb') {
+    /* Load the script */
+    const timeweb = fs.readFileSync('./node_modules/timeweb/dist/timeweb.js', 'utf8')
+    log(timeweb, options.verbose)
+    /* Run the script within the page context */
+    await page.evaluateOnNewDocument(timeweb => { eval(timeweb) }, timeweb)
+  }
 
   /* Navigate to the specified URL and wait for all resources to load */
   try {
@@ -311,6 +322,9 @@ const exportVideo = async () => {
 
   /* Wait for a bit because GSAP takes a little bit of time to initialise and the script was missing it. */
   await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)))
+  // /* Wait for a bit because GSAP takes a little bit of time to initialise and the script was missing it. */
+  await new Promise(resolve => setTimeout(resolve, 2000))
+  // await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 12000)))
 
   /* Check the selector exists */
   const validSelector = await page.evaluate(discoverSelector, options.selector)
@@ -388,7 +402,21 @@ const exportVideo = async () => {
     const frame = x / duration
 
     /* Progress the timeline to the specified frame */
-    await page.evaluate(animationProgressFrame, options.timeline, frame)
+    if (options.advance === 'gsap') {
+      await page.evaluate(animationProgressFrame, options.timeline, frame)
+    } else {
+      /* Time in ms to advance the frames */
+      const interval = 1000 / options.fps
+      /* Shift the ms along slightly to avoid errors with weird gsap code */
+      const ms = interval * frameStep + 1
+
+      await page.evaluate((ms) => {
+        window.timeweb.goTo(ms)
+        document.querySelector('iframe').contentWindow.timeweb.goTo(ms)
+      }, ms)
+
+      // await new Promise(resolve => setTimeout(resolve, 100))
+    }
 
     /* Select the DOM element via the specified selector */
     const el = options.selector === 'document' ? page : await page.$(options.selector)
