@@ -18,7 +18,7 @@
     "url": "git+https://github.com/workeffortwaste/gsap-video-export.git"
   },
   "bin": {
-    "gsap-video-export": "index.js"
+    "gsap-video-export": "cli.js"
   },
   "bugs": {
     "url": "https://github.com/workeffortwaste/gsap-video-export/issues"
@@ -29,7 +29,9 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "cli-progress": "^3.12.0",
+    "eslint": "^9.15.0",
     "fluent-ffmpeg": "^2.1.3",
+    "neostandard": "^0.11.8",
     "pngjs": "^7.0.0",
     "puppeteer": "^23.8.0",
     "puppeteer-extra": "^3.3.6",
@@ -39,12 +41,5 @@
     "timeweb": "^0.3.2",
     "tmp": "^0.2.3",
     "yargs": "^17.7.2"
-  },
-  "devDependencies": {
-    "eslint": "^7.32.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0"
   }
 }

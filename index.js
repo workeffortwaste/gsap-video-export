@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /* eslint-disable no-eval */
 /**
  * gsap-video-export
@@ -22,15 +21,13 @@ import ffmpeg from 'fluent-ffmpeg'
 
 /* Command line helpers */
 import cliProgress from 'cli-progress'
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
 import { parseArgsStringToArgv } from 'string-argv'
 
 /* Image helpers */
 import { PNG } from 'pngjs'
 import rgbHex from 'rgb-hex'
 import fs from 'fs'
-puppeteer.use(StealthPlugin())
+
 ffmpeg.setFfmpegPath(ffmpegPath)
 
 /* Colors */
@@ -43,71 +40,6 @@ const colors = {
   green: '\x1b[32m',
   red: '\x1b[31m',
   yellow: '\x1b[33m'
-}
-
-/* CLI welcome message */
-const { version } = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url)))
-console.log(`gsap-video-export ${version} / ${colors.blue}@defaced${colors.reset}`)
-
-/* Support */
-if (!process.env.WORKEFFORTWASTE_SUPPORTER) {
-  console.log(`${colors.magenta}
-┃
-┃ ${colors.underscore}Support this project! ${colors.reset}${colors.magenta}
-┃
-┃ Help support the work that goes into creating and maintaining my projects
-┃ and buy me a coffee via Ko-fi or sponsor me on GitHub Sponsors.
-┃
-┃ Ko-fi: https://ko-fi.com/defaced
-┃ GitHub Sponsors: https://github.com/sponsors/workeffortwaste/
-┃${colors.reset}
-  `)
-}
-
-const _yargs = yargs(hideBin(process.argv))
-
-/* CLI arguments config */
-const options = _yargs
-  .wrap(Math.min(110, _yargs.terminalWidth()))
-  .default({ p: 'auto', c: 'libx264', o: 'video.mp4', t: 'gsap', f: 60, S: 'document', z: 1, V: '1920x1080', v: 'auto', E: '"-pix_fmt yuv420p -crf 18"' })
-  .usage('$0 <url>', 'Export GreenSock (GSAP) animation to video')
-  .describe('s', '[browser] Custom script')
-  .describe('S', '[browser] DOM selector')
-  .describe('t', '[browser] GSAP timeline object')
-  .describe('z', '[browser] Scale factor')
-  .describe('V', '[browser] Viewport size')
-  .describe('i', '[browser] Info only')
-  .describe('frame-start', '[browser] Start frame')
-  .describe('frame-end', '[browser] End frame')
-  .describe('p', '[video] Auto padding color')
-  .describe('c', '[video] Codec')
-  .describe('e', '[video] FFmpeg input options')
-  .describe('E', '[video] FFmpeg output options')
-  .describe('o', '[video] Filename')
-  .describe('f', '[video] Framerate')
-  .describe('v', '[video] Output resolution')
-  .alias('i', 'info')
-  .alias('o', 'output')
-  .alias('t', 'timeline')
-  .alias('f', 'fps')
-  .alias('c', 'codec')
-  .alias('S', 'selector')
-  .alias('s', 'script')
-  .alias('z', 'scale')
-  .alias('e', 'input-options')
-  .alias('E', 'output-options')
-  .alias('p', 'color')
-  .alias('V', 'viewport')
-  .alias('v', 'resolution')
-  .number(['q', 'f', 'z'])
-  .string(['e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p'])
-  .epilogue('For more information visit documentation at: \nhttp://github.com/workeffortwaste/gsap-video-export')
-  .argv
-
-/* Explode viewport resolutions */
-const resolutions = {
-  viewportWidth: parseInt(options.viewport.split('x')[0]), /* An additional 16px is required because puppeteer is coming up short */
-  viewportHeight: parseInt(options.viewport.split('x')[1])
 }
 
 /* CLI progress bar config */
@@ -167,7 +99,7 @@ const discoverSelector = (selector) => {
 }
 
 /**
- * A puppeteer function to advance the animation to the specified frame.
+ * A puppeteer function to advance the gsap timeline to the specified frame.
  * @param {obj} timeline The greensock timeline to use
  * @param {int} frame
  */
@@ -272,22 +204,65 @@ const urlHelper = (url) => {
  */
 const cleanExit = async (browser) => {
   /* Close the browser process */
-  await browser.close()
+  if (browser) await browser.close()
   /* Exit the script */
   process.exit()
+}
+
+/** Log
+ * A helper function to log messages to the console.
+ * @param {string} msg The message to log
+ * @param {boolean} verbose Whether to log the message or not
+ */
+const log = (msg, verbose) => {
+  if (verbose) console.log(msg)
 }
 
 /**
  * The main video export function
  */
-const exportVideo = async () => {
-  console.log(`${options.url}\n`)
+const videoExport = async (options) => {
+  if (!options.url) {
+    log('No URL specified', options.verbose)
+    cleanExit()
+  }
+
+  log(`${options.url}\n`, options.verbose)
+
+  /* Set defaults if they don't exist */
+  options.viewport = options.viewport || '1920x1080'
+  options.scale = options.scale || 1
+  options.advance = options.advance || 'gsap'
+  options.color = options.color || 'auto'
+  options.codec = options.codec || 'libx264'
+  options.fps = options.fps || 60
+  options.output = options.output || 'video.mp4'
+  options.selector = options.selector || 'document'
+  options.resolution = options.resolution || 'auto'
+  options['output-options'] = options['output-options'] || '"-pix_fmt yuv420p -crf 18"'
+  options.quiet = options.quiet !== undefined ? options.quiet : true /* Default to quiet mode if not specified */
+  options.errors = !options.cli /* Default to errors if not specified */
+  options.headless = options.headless !== undefined ? options.headless : true /* Default to headless mode if not specified */
+  options.timeline = options.timeline || 'gsap'
+
+  /* Explode viewport resolutions */
+  const resolutions = {
+    viewportWidth: parseInt(options.viewport.split('x')[0]), /* An additional 16px is required because puppeteer is coming up short */
+    viewportHeight: parseInt(options.viewport.split('x')[1])
+  }
+
   /* If we're using the browser advance we can't use stealth */
   if (options.advance === 'gsap') puppeteer.use(StealthPlugin())
 
   /* Start the browser fullscreen in the background (headless) */
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--allow-file-access-from-files', '--kiosk'] })
+  let browser
+  if (options.headless) {
+    browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--allow-file-access-from-files', '--kiosk'] })
+  } else {
+    browser = await puppeteer.launch({ headless: false, args: ['--no-sandbox', '--allow-file-access-from-files'] })
+  }
   const page = await browser.newPage()
+  await page.setBypassCSP(true)
 
   /* Set the viewport and scale from the cli options */
   await page.setViewport({ width: resolutions.viewportWidth, height: resolutions.viewportHeight, deviceScaleFactor: options.scale })
@@ -305,12 +280,13 @@ const exportVideo = async () => {
   try {
     await page.goto(urlHelper(options.url), { waitUntil: 'networkidle0' })
   } catch (err) {
-    console.log(padCenter('Browser', 'FAIL', true))
+    log(padCenter('Browser', 'FAIL', true), options.verbose)
+    if (options.errors) throw new Error('Unable to load the specified URL')
     await cleanExit(browser)
   }
 
   /* Print status text */
-  console.log(padCenter('Browser', 'OK'))
+  log(padCenter('Browser', 'OK'), options.verbose)
 
   /* If a custom script is specified and exists */
   if (options.script && fs.existsSync(options.script)) {
@@ -320,8 +296,6 @@ const exportVideo = async () => {
     await page.evaluate(customScript => { eval(customScript) }, customScript)
   }
 
-  /* Wait for a bit because GSAP takes a little bit of time to initialise and the script was missing it. */
-  await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 2000)))
   // /* Wait for a bit because GSAP takes a little bit of time to initialise and the script was missing it. */
   await new Promise(resolve => setTimeout(resolve, 2000))
   // await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 12000)))
@@ -330,10 +304,13 @@ const exportVideo = async () => {
   const validSelector = await page.evaluate(discoverSelector, options.selector)
 
   /* Print status text */
-  console.log(padCenter('Selector', validSelector ? `(${options.selector}) OK` : `(${options.selector}) FAIL`, !validSelector))
+  log(padCenter('Selector', validSelector ? `(${options.selector}) OK` : `(${options.selector}) FAIL`, !validSelector), options.verbose)
 
   /* Exit if invalid selector */
-  if (!validSelector) await cleanExit(browser)
+  if (!validSelector) {
+    if (options.errors) throw new Error('Invalid selector')
+    await cleanExit(browser)
+  }
 
   /* Scroll the selected element into view if it's not set as document */
   if (options.selector !== 'document') {
@@ -344,19 +321,25 @@ const exportVideo = async () => {
   const gsapVersion = await page.evaluate(discoverGsapFramework)
 
   /* Print status text */
-  console.log(padCenter('GSAP', gsapVersion ? 'v' + gsapVersion : 'FAIL', !gsapVersion))
+  log(padCenter('GSAP', gsapVersion ? 'v' + gsapVersion : 'FAIL', !gsapVersion), options.verbose)
 
   /* Exit if no gsap framework found on the window obj */
-  if (!gsapVersion) await cleanExit(browser)
+  if (!gsapVersion) {
+    if (options.errors) throw new Error('GSAP framework not found')
+    await cleanExit(browser)
+  }
 
   /* Discover the gsap timeline object */
   const timeline = await page.evaluate(discoverTimeline, options.timeline)
 
   /* Print status text */
-  console.log(padCenter('Timeline', timeline ? `(${options.timeline}) OK` : 'FAIL', !timeline))
+  log(padCenter('Timeline', timeline ? `(${options.timeline}) OK` : 'FAIL', !timeline), options.verbose)
 
   /* Exit if no gsap timeline is available */
-  if (!timeline) await cleanExit(browser)
+  if (!timeline) {
+    if (options.errors) throw new Error('GSAP timeline not found')
+    await cleanExit(browser)
+  }
 
   /* Calculate the animation length */
   const durationSeconds = await page.evaluate(animationDurationSeconds, options.timeline)
@@ -364,18 +347,22 @@ const exportVideo = async () => {
 
   /* Exit if it's an infinite loop */
   if (durationSeconds > 3600) {
-    console.log(padCenter('Duration', 'INFINITE', true))
+    log(padCenter('Duration', 'INFINITE', true), options.verbose)
+    if (options.errors) throw new Error('Infinite loop detected')
     await cleanExit(browser)
   }
 
   /* Print status text */
-  console.log(padCenter('Duration', durationSeconds !== 0 ? timeString(durationSeconds.toFixed(1)) : 'FAIL', durationSeconds === 0))
+  log(padCenter('Duration', durationSeconds !== 0 ? timeString(durationSeconds.toFixed(1)) : 'FAIL', durationSeconds === 0), options.verbose)
 
   /* Exit if the animation length is 0 */
-  if (durationSeconds === 0) await cleanExit(browser)
+  if (durationSeconds === 0) {
+    if (options.errors) throw new Error('Animation duration is 0')
+    await cleanExit(browser)
+  }
 
   /* Print status text */
-  console.log(padCenter('Frames', duration.toString(), false))
+  log(padCenter('Frames', `(${options.advance}) ${duration.toString()}`, false), options.verbose)
 
   /* If the info flag is toggled exit cleanly */
   if (options.info) await cleanExit(browser)
@@ -384,14 +371,14 @@ const exportVideo = async () => {
   const tmpobj = tmp.dirSync()
 
   /* Print status text */
-  console.log('\nExporting animation frames\n')
+  log('\nExporting animation frames\n', options.verbose)
 
   /* Set the start and end frames */
   const startFrame = options['frame-start'] || 0
   const endFrame = options['frame-end'] || duration
 
   /* Start the CLI export progress bar */
-  b1.start(endFrame, startFrame)
+  if (options.verbose) b1.start(endFrame, startFrame)
 
   /* Time frame export */
   const timeFrames = process.hrtime()
@@ -414,8 +401,6 @@ const exportVideo = async () => {
         window.timeweb.goTo(ms)
         document.querySelector('iframe').contentWindow.timeweb.goTo(ms)
       }, ms)
-
-      // await new Promise(resolve => setTimeout(resolve, 100))
     }
 
     /* Select the DOM element via the specified selector */
@@ -425,8 +410,8 @@ const exportVideo = async () => {
     await el.screenshot({ path: tmpobj.name + '/' + frameStep + '.png' })
 
     /* Increment and update the CLI export progress bar */
-    b1.increment()
-    b1.update(x + 1)
+    if (options.verbose) b1.increment()
+    if (options.verbose) b1.update(x + 1)
 
     /* Increment the frame step */
     frameStep++
@@ -436,7 +421,7 @@ const exportVideo = async () => {
   const timeFramesStop = process.hrtime(timeFrames)
 
   /* Stop the CLI export progress bar */
-  b1.stop()
+  if (options.verbose) b1.stop()
 
   /* Now we've captured all the frames quit the browser to focus on encoding the video */
   await browser.close()
@@ -462,57 +447,67 @@ const exportVideo = async () => {
   const padColor = options.color === 'auto' ? image.pixelSample : options.color
 
   /* Add some more information about the video we're making */
-  console.log('\n')
-  console.log(padCenter('Output resolution', `${options.resolution === 'auto' ? '(auto) ' : ''}${finalResolution}`))
-  console.log(padCenter('Padding color', `${options.color === 'auto' ? '(auto) ' : ''}#${padColor.toUpperCase()}`))
+  log('\n', options.verbose)
+  log(padCenter('Output resolution', `${options.resolution === 'auto' ? '(auto) ' : ''}${finalResolution}`), options.verbose)
+  log(padCenter('Padding color', `${options.color === 'auto' ? '(auto) ' : ''}#${padColor.toUpperCase()}`), options.verbose)
 
   /* Timing vars */
   let timeRender, timeRenderStop
 
   /* Encode the video */
-  const render = ffmpeg()
-    .addInput(tmpobj.name + '/%d.png')
-    .videoCodec(options.codec)
-    .inputFPS(options.fps)
-    .size(finalResolution)
-    .autopad(padColor)
-    .format('mp4')
-    .output(options.output)
-    .on('start', function (commandLine) {
-      console.log('\nRendering video\n')
-      b1.start(100, 0)
-      /* Time render */
-      timeRender = process.hrtime()
-    })
-    .on('progress', function (progress) {
-      b1.increment()
-      b1.update(Math.ceil(progress.percent))
-    })
-    .on('end', function () {
-      /* Set the progress bar to 100% */
-      b1.increment()
-      b1.update(100)
+  return new Promise((resolve, reject) => {
+    const render = ffmpeg()
+      .addInput(tmpobj.name + '/%d.png')
+      .videoCodec(options.codec)
+      .inputFPS(options.fps)
+      .size(finalResolution)
+      .autopad(padColor)
+      .format('mp4')
+      .output(options.output)
+      .on('start', function (commandLine) {
+        log('\nRendering video\n', options.verbose)
+        if (options.verbose) b1.start(100, 0)
+        /* Time render */
+        timeRender = process.hrtime()
+      })
+      .on('progress', function (progress) {
+        if (options.verbose) b1.increment()
+        if (options.verbose) b1.update(Math.ceil(progress.percent))
+      })
+      .on('end', function () {
+        /* Set the progress bar to 100% */
+        if (options.verbose) b1.increment()
+        if (options.verbose) b1.update(100)
 
-      /* Stop the timer */
-      b1.stop()
+        /* Stop the timer */
+        if (options.verbose) b1.stop()
 
-      /* Time (stop) render */
-      timeRenderStop = process.hrtime(timeRender)
+        /* Time (stop) render */
+        timeRenderStop = process.hrtime(timeRender)
 
-      console.log('\nTime elapsed\n')
-      console.log(padCenter('Export', ((timeFramesStop[0] * 1e9 + timeFramesStop[1]) / 1e9).toFixed(2).toString() + 's', false))
-      console.log(padCenter('Render', ((timeRenderStop[0] * 1e9 + timeRenderStop[1]) / 1e9).toFixed(2).toString() + 's', false))
+        log('\nTime elapsed\n', options.verbose)
+        log(padCenter('Export', ((timeFramesStop[0] * 1e9 + timeFramesStop[1]) / 1e9).toFixed(2).toString() + 's', false), options.verbose)
+        log(padCenter('Render', ((timeRenderStop[0] * 1e9 + timeRenderStop[1]) / 1e9).toFixed(2).toString() + 's', false), options.verbose)
 
-      /* Success */
-      console.log(`\nVideo succesfully exported as ${colors.blue}${options.output}`)
-    })
+        /* Success */
+        log(`\nVideo succesfully exported as ${colors.blue}${options.output}${colors.reset}`, options.verbose)
+        resolve({
+          file: options.output,
+          exportTime: +((timeFramesStop[0] * 1e9 + timeFramesStop[1]) / 1e9).toFixed(2),
+          renderTime: +((timeRenderStop[0] * 1e9 + timeRenderStop[1]) / 1e9).toFixed(2)
+        })
+      })
+      .on('error', function (err) {
+        reject(err)
+      })
 
-  /* Additional ffmpeg io options */
-  if (options['input-options']) render.inputOptions(...parseArgsStringToArgv(options['input-options'].slice(1, -1)))
-  if (options['output-options']) render.outputOptions(...parseArgsStringToArgv(options['output-options'].slice(1, -1)))
+    /* Additional ffmpeg io options */
+    if (options['input-options']) render.inputOptions(...parseArgsStringToArgv(options['input-options'].slice(1, -1)))
+    if (options['output-options']) render.outputOptions(...parseArgsStringToArgv(options['output-options'].slice(1, -1)))
 
-  render.run()
+    render.run()
+  })
 }
 
 /* GO */
-exportVideo()
+export { videoExport }
