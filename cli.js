@@ -57,7 +57,7 @@ const options = _yargs
   .describe('frame-start', '[browser] Start frame')
   .describe('frame-end', '[browser] End frame')
   .describe('chrome', '[browser] Use the system installed Chrome')
-  .describe('cookies', '[browser] Cookies in JSON format')
+  .describe('cookies', '[browser] Cookies JSON file')
   .describe('a', '[browser] Frame advance method')
   .describe('h', '[browser] Headless mode')
   .describe('p', '[video] Auto padding color')
