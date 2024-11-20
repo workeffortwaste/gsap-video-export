@@ -439,6 +439,26 @@ const videoExport = async (options) => {
 
   /* Progress the animation and take a screenshot */
   let frameStep = 0
+  let wasteStep = 0
+
+  /* Timeweb won't properly jump to a startFrame for me so we're going to waste some frames before we start capturing to ensure compatibility with the custom startFrame. */
+  if (options.advance === 'timeweb') {
+    for (let x = 0; x < startFrame; x++) {
+      /* Time in ms to advance the frames */
+      const interval = 1000 / options.fps
+
+      /* Shift the ms along slightly to avoid errors with weird gsap code */
+      const ms = interval * wasteStep + 1
+      await page.evaluate(async (ms) => {
+        /* Prepare frame */
+        await window.timeweb.goTo(ms)
+      }, ms)
+
+      wasteStep++
+    }
+  }
+
+  /* The recording loop */
   for (let x = startFrame; x < endFrame; x++) {
     const frame = x / duration
 
