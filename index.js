@@ -264,7 +264,6 @@ const videoExport = async (options) => {
     browser = await puppeteer.launch({ executablePath, headless: false, defaultViewport: null, args: ['--disable-blink-features=AutomationControlled', '--no-sandbox', '--allow-file-access-from-files'] })
   }
   const page = await browser.newPage()
-  await page.setBypassCSP(true)
 
   /* Set the viewport and scale from the cli options */
   await page.setViewport({ width: resolutions.viewportWidth, height: resolutions.viewportHeight, deviceScaleFactor: options.scale })
