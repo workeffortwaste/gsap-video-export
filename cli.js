@@ -57,6 +57,7 @@ const options = _yargs
   .describe('frame-start', '[browser] Start frame')
   .describe('frame-end', '[browser] End frame')
   .describe('chrome', '[browser] Use the system installed Chrome')
+  .describe('cookies', '[browser] Cookies in JSON format')
   .describe('a', '[browser] Frame advance method')
   .describe('h', '[browser] Headless mode')
   .describe('p', '[video] Auto padding color')
@@ -84,8 +85,8 @@ const options = _yargs
   .alias('q', 'verbose')
   .alias('h', 'headless')
   .number(['f', 'z'])
-  .string(['e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p'])
   .boolean(['i', 'q', 'h', 'chrome'])
+  .string(['e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p', 'cookies'])
   .epilogue('For more information visit documentation at: \nhttp://github.com/workeffortwaste/gsap-video-export')
   .argv
 

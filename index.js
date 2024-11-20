@@ -253,6 +253,7 @@ const videoExport = async (options) => {
   options.headless = options.headless !== undefined ? options.headless : true /* Default to headless mode if not specified */
   options.timeline = options.timeline || 'gsap'
   options.chrome = options.chrome !== undefined ? options.chrome : false
+  options.cookies = options.cookies || null
 
   /* Explode viewport resolutions */
   const resolutions = {
@@ -275,6 +276,11 @@ const videoExport = async (options) => {
     browser = await puppeteer.launch({ executablePath, headless: false, defaultViewport: null, args: ['--disable-blink-features=AutomationControlled', '--no-sandbox', '--allow-file-access-from-files'] })
   }
   const page = await browser.newPage()
+
+  if (options.cookies) {
+    const cookies = JSON.parse(fs.readFileSync(options.cookies))
+    await page.setCookie(...cookies)
+  }
 
   /* Set the viewport and scale from the cli options */
   await page.setViewport({ width: resolutions.viewportWidth, height: resolutions.viewportHeight, deviceScaleFactor: options.scale })
