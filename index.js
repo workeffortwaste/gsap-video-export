@@ -5,11 +5,9 @@
  * twitter: @defaced
  *
  * Source: https://github.com/workeffortwaste/gsap-video-export/
- * /
-
-/* Use puppeteer extra to avoid being picked up as a bot */
-import puppeteer from 'puppeteer-extra'
-import StealthPlugin from 'puppeteer-extra-plugin-stealth'
+ */
+import puppeteer from 'puppeteer'
+import { findChrome } from 'find-chrome-bin'
 
 /* Misc */
 import tmp from 'tmp'
@@ -251,15 +249,19 @@ const videoExport = async (options) => {
     viewportHeight: parseInt(options.viewport.split('x')[1])
   }
 
-  /* If we're using the browser advance we can't use stealth */
-  if (options.advance === 'gsap') puppeteer.use(StealthPlugin())
-
   /* Start the browser fullscreen in the background (headless) */
   let browser
+  let executablePath = null
+
+  if (options.chrome) {
+    const chromeLocation = await findChrome()
+    executablePath = chromeLocation.executablePath
+  }
+
   if (options.headless) {
-    browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--allow-file-access-from-files', '--kiosk'] })
+    browser = await puppeteer.launch({ executablePath, headless: true, defaultViewport: null, args: ['--disable-blink-features=AutomationControlled', '--no-sandbox', '--allow-file-access-from-files', '--kiosk'] })
   } else {
-    browser = await puppeteer.launch({ headless: false, args: ['--no-sandbox', '--allow-file-access-from-files'] })
+    browser = await puppeteer.launch({ executablePath, headless: false, defaultViewport: null, args: ['--disable-blink-features=AutomationControlled', '--no-sandbox', '--allow-file-access-from-files'] })
   }
   const page = await browser.newPage()
   await page.setBypassCSP(true)
