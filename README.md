@@ -264,6 +264,9 @@ gsap-video-export http://nodcoding.com/ --script "./scroll.js"
 
 The video below has issues with the timing of animations that exist outside of the scroll timeline.
 
+https://github.com/user-attachments/assets/be461336-3605-4a81-af35-de962e5671bc
+
+
 Using the `timeweb` frame advancement option the native time handling is overwritten allowing us to globally advance the browser frame by frame.
 
 ```bash
@@ -271,6 +274,8 @@ gsap-video-export http://nodcoding.com/ --script "./scroll.js" --advance timeweb
 ```
 
 In the output below the scroll timeline and other animated elements are now captured perfectly.
+
+https://github.com/user-attachments/assets/b8a5b4c6-33ab-4e56-8218-b1761ab7b1c0
 
 ## Advanced
 
