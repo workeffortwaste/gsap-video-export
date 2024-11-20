@@ -86,7 +86,7 @@ const options = _yargs
   .alias('h', 'headless')
   .number(['f', 'z'])
   .boolean(['i', 'q', 'h', 'chrome'])
-  .string(['e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p', 'cookies'])
+  .string(['e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p', 'cookies', 'advance'])
   .epilogue('For more information visit documentation at: \nhttp://github.com/workeffortwaste/gsap-video-export')
   .argv
 
