@@ -447,7 +447,6 @@ const videoExport = async (options) => {
 
       await page.evaluate((ms) => {
         window.timeweb.goTo(ms)
-        document.querySelector('iframe').contentWindow.timeweb.goTo(ms)
       }, ms)
     }
 
