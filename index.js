@@ -207,6 +207,17 @@ const cleanExit = async (browser) => {
   process.exit()
 }
 
+/**
+ * Exit the function with an error
+ * @param {obj} browser The puppeteer browser object.
+ */
+const dirtyExit = async (browser, error) => {
+  /* Close the browser process */
+  if (browser) await browser.close()
+  /* Exit the script */
+  throw new Error(error)
+}
+
 /** Log
  * A helper function to log messages to the console.
  * @param {string} msg The message to log
@@ -239,9 +250,9 @@ const videoExport = async (options) => {
   options.resolution = options.resolution || 'auto'
   options['output-options'] = options['output-options'] || '"-pix_fmt yuv420p -crf 18"'
   options.quiet = options.quiet !== undefined ? options.quiet : true /* Default to quiet mode if not specified */
-  options.errors = !options.cli /* Default to errors if not specified */
   options.headless = options.headless !== undefined ? options.headless : true /* Default to headless mode if not specified */
   options.timeline = options.timeline || 'gsap'
+  options.chrome = options.chrome !== undefined ? options.chrome : false
 
   /* Explode viewport resolutions */
   const resolutions = {
@@ -282,7 +293,6 @@ const videoExport = async (options) => {
     await page.goto(urlHelper(options.url), { waitUntil: 'networkidle0' })
   } catch (err) {
     log(padCenter('Browser', 'FAIL', true), options.verbose)
-    if (options.errors) throw new Error('Unable to load the specified URL')
     await cleanExit(browser)
   }
 
@@ -294,7 +304,15 @@ const videoExport = async (options) => {
     /* Load the script */
     const customScript = fs.readFileSync(options.script, 'utf8')
     /* Run the script within the page context */
-    await page.evaluate(customScript => { eval(customScript) }, customScript)
+    try {
+      await page.evaluate(customScript => { eval(customScript) }, customScript)
+    } catch (err) {
+      if (options.cli) {
+        await cleanExit(browser)
+      } else {
+        await dirtyExit(browser, 'Unable to run the specified script: ' + err)
+      }
+    }
   }
 
   // /* Wait for a bit because GSAP takes a little bit of time to initialise and the script was missing it. */
@@ -309,8 +327,11 @@ const videoExport = async (options) => {
 
   /* Exit if invalid selector */
   if (!validSelector) {
-    if (options.errors) throw new Error('Invalid selector')
-    await cleanExit(browser)
+    if (options.cli) {
+      await cleanExit(browser)
+    } else {
+      await dirtyExit(browser, 'Invalid selector')
+    }
   }
 
   /* Scroll the selected element into view if it's not set as document */
@@ -326,8 +347,11 @@ const videoExport = async (options) => {
 
   /* Exit if no gsap framework found on the window obj */
   if (!gsapVersion) {
-    if (options.errors) throw new Error('GSAP framework not found')
-    await cleanExit(browser)
+    if (options.cli) {
+      await cleanExit(browser)
+    } else {
+      await dirtyExit(browser, 'GSAP framework not found')
+    }
   }
 
   /* Discover the gsap timeline object */
@@ -338,8 +362,11 @@ const videoExport = async (options) => {
 
   /* Exit if no gsap timeline is available */
   if (!timeline) {
-    if (options.errors) throw new Error('GSAP timeline not found')
-    await cleanExit(browser)
+    if (options.cli) {
+      await cleanExit(browser)
+    } else {
+      await dirtyExit(browser, 'GSAP timeline not found')
+    }
   }
 
   /* Calculate the animation length */
@@ -349,8 +376,12 @@ const videoExport = async (options) => {
   /* Exit if it's an infinite loop */
   if (durationSeconds > 3600) {
     log(padCenter('Duration', 'INFINITE', true), options.verbose)
-    if (options.errors) throw new Error('Infinite loop detected')
-    await cleanExit(browser)
+
+    if (options.cli) {
+      await cleanExit(browser)
+    } else {
+      await dirtyExit(browser, 'Infinite loop detected')
+    }
   }
 
   /* Print status text */
@@ -358,14 +389,26 @@ const videoExport = async (options) => {
 
   /* Exit if the animation length is 0 */
   if (durationSeconds === 0) {
-    if (options.errors) throw new Error('Animation duration is 0')
-    await cleanExit(browser)
+    if (options.cli) {
+      await cleanExit(browser)
+    } else {
+      await dirtyExit(browser, 'Animation duration is 0')
+    }
   }
 
   /* Print status text */
   log(padCenter('Frames', `(${options.advance}) ${duration.toString()}`, false), options.verbose)
 
   /* If the info flag is toggled exit cleanly */
+  if (options.info && !options.cli) {
+    await browser.close()
+    return {
+      duration: durationSeconds,
+      frames: duration,
+      gsap: gsapVersion,
+      timeline: options.timeline
+    }
+  }
   if (options.info) await cleanExit(browser)
 
   /* Set up the tmp directory */
