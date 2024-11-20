@@ -293,7 +293,11 @@ const videoExport = async (options) => {
     await page.goto(urlHelper(options.url), { waitUntil: 'networkidle0' })
   } catch (err) {
     log(padCenter('Browser', 'FAIL', true), options.verbose)
-    await cleanExit(browser)
+    if (options.cli) {
+      await cleanExit(browser)
+    } else {
+      await dirtyExit(browser, 'Unable to load the specified URL')
+    }
   }
 
   /* Print status text */
