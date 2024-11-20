@@ -10,21 +10,44 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 ## Contents
 
-* [Getting Started](#getting-started)
-  * [Installation](#installation)
-  * [Usage](#usage)
-  * [Options](#options)
-* [Examples](#examples)
-  * [Page Export](#page-export)
-  * [Custom Timeline](#custom-timeline)
-  * [Export Element](#export-element)
-  * [Twitter Export](#twitter-export)
-  * [Coloured Background](#coloured-background)   
-  * [Lossless Export](#lossless-export)
-* [FAQ](#faq)
-* [Sponsors](#sponsors)
-  * [Bonus](#bonus)
-* [Author](#author)   
+- [gsap-video-export](#gsap-video-export)
+  - [Contents](#contents)
+  - [What's New](#whats-new)
+    - [2.0.0 🆕](#200-)
+  - [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Command Line](#command-line)
+      - [Options](#options)
+    - [ESM Module 🆕](#esm-module-)
+      - [Options](#options-1)
+  - [Examples](#examples)
+    - [Page Export](#page-export)
+    - [Custom Timeline](#custom-timeline)
+    - [Export Element](#export-element)
+    - [Twitter Export](#twitter-export)
+    - [Coloured Background](#coloured-background)
+    - [Lossless\* Export](#lossless-export)
+    - [Timeweb Frame Advancement 🆕](#timeweb-frame-advancement-)
+  - [Advanced](#advanced)
+    - [Cookies 🆕](#cookies-)
+    - [Chrome 🆕](#chrome-)
+    - [Headless 🆕](#headless-)
+  - [FAQ](#faq)
+  - [Sponsors](#sponsors)
+    - [Bonus](#bonus)
+  - [Author](#author)
+
+
+## What's New
+
+### 2.0.0 🆕
+
+* ESM module support.
+* Puppeteer updated to the latest version, and  `puppeteer-stealth` has been swapped for `rebrowser-puppeteer` for better bot detection avoidance.
+* Added support for `timeweb` frame advancement to allow for capturing of elements animated outside of the GSAP timeline.
+* Optionally use the system installed version of Chrome for future compatibility.
+* Optionally disable headless mode for debugging.
+* Supply your own cookie JSON file to bypass cookie pop-ups and authentication.
 
 ## Getting Started
 
@@ -36,7 +59,8 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 npm install -g gsap-video-export
 ```
 
-### Usage
+
+### Command Line
 
 Once installed the tool can be used as per the following example.
 
@@ -46,7 +70,7 @@ gsap-video-export <url>
 
 > When using CodePen URLs `gsap-video-export` will automatically redirect to the full page debug preview.
 
-### Options
+#### Options
 
 ```
 Options:
@@ -57,9 +81,12 @@ Options:
   -t, --timeline        [browser] GSAP timeline object                              [string] [default: "gsap"]
   -z, --scale           [browser] Scale factor                                           [number] [default: 1]
   -V, --viewport        [browser] Viewport size                                [string] [default: "1920x1080"]
-  -i, --info            [browser] Info only
+  -i, --info            [browser] Info only                                         [boolean] [default: false]
       --frame-start     [browser] Start frame
       --frame-end       [browser] End frame
+      --chrome          [browser] Use the system installed Chrome                   [boolean] [default: false]
+      --cookies         [browser] Cookie JSON  file                                                   [string]
+  -r, --advance         [browser] Frame advance method                              [string] [default: "gsap"]
   -p, --color           [video] Auto padding color                                  [string] [default: "auto"]
   -c, --codec           [video] Codec                                            [string] [default: "libx264"]
   -e, --input-options   [video] FFmpeg input options                                                  [string]
@@ -67,7 +94,54 @@ Options:
   -o, --output          [video] Filename                                       [string] [default: "video.mp4"]
   -f, --fps             [video] Framerate                                               [number] [default: 60]
   -v, --resolution      [video] Output resolution                                   [string] [default: "auto"]
+      --verbose         [tool] Verbose output                                        [boolean] [default: true]
   ```
+
+
+### ESM Module 🆕
+
+This library can now be imported as an ESM module, opening up `gsap-video-export` to be used seamlessly as part of a production pipeline.
+
+```javascript
+import { videoExport } from 'gsap-video-export'
+
+const videoDetails = await videoExport({
+  url: <url>,
+})
+
+console.log(videoDetails)
+/* { file: filename (string), exportTime: seconds (number), renderTime: seconds (number) */
+```
+
+When running as an ESM module the output will be silent and any issues willl throw an error. You can check for problems ahead of time with the `info` option and wrapping the function with a try/catch block.
+
+```javascript
+import { videoExport } from 'gsap-video-export'
+
+let videoDetails
+try {
+  videoDetails = await videoExport({
+    url: <url>,
+    info: true
+  })
+} catch (err) {
+  console.log(err)
+}
+
+console.log(videoDetails)
+/**
+ * {
+ *  duration: seconds (number),
+ *  frames: frames (number),
+ *  gsap: version (string),
+ *  timeline: timeline (string)
+ * }
+ */
+```
+
+#### Options
+
+All options available via the Command Line tool are exposed as an option in the ESM module using their long name.
 
 ## Examples
 
@@ -174,6 +248,55 @@ gsap-video-export https://codepen.io/cassie-codes/pen/VweQjBw -S svg -z 2 -v 192
 
 https://user-images.githubusercontent.com/49479599/154278049-ae6d585b-9491-45a8-bd2a-ea1f741580e2.mp4
 
+### Timeweb Frame Advancement 🆕
+
+The default frame advancement method for `gsap-video-export` steps through a GSAP timeline to create a silky smooth video.
+
+Unfortunately if there are animations present that are not tied to the GSAP timeline then it may render incorrectly. [Timeweb](https://github.com/tungs/timeweb) is now included as an alternative method for advancing frames which largely resolves this issue.
+
+Using https://nodcoding.com/ as an example, even though the site is built with GSAP there is no exposed timeline so the standard usage of `gsap-video-export` will fail to start.
+
+Let's inject a simple GSAP timeline that scrolls the page to the bottom and use the default `gsap` frame advancement to render the video.
+
+```bash
+gsap-video-export http://nodcoding.com/ --script "./scroll.js"
+```
+
+The video below has issues with the timing of animations that exist outside of the scroll timeline.
+
+Using the `timeweb` frame advancement option the native time handling is overwritten allowing us to globally advance the browser frame by frame.
+
+```bash
+gsap-video-export http://nodcoding.com/ --script "./scroll.js" --advance timeweb
+```
+
+In the output below the scroll timeline and other animated elements are now captured perfectly.
+
+## Advanced
+
+### Cookies 🆕
+
+If you need to authenticate your session or disable a cookie popup then it's possible to supply your own cookies as a JSON file.
+
+I recommend using this Chrome Extension to export them in a compatible format.
+https://chromewebstore.google.com/detail/export-cookie-json-file-f/nmckokihipjgplolmcmjakknndddifde?hl=en
+
+### Chrome 🆕
+
+It's now possible to use the system installed version of Chrome by adding the `--chrome` flag. The library will automatically find the Chrome install location and use that instead of the Chrome for Testing binary that's supplied with Puppeteer.
+
+```bash
+gsap-video-export <url> --chrome
+```
+
+### Headless 🆕
+
+If you need to see what's happening 'on page' to debug issues you can disable headless mode to inspect the Chrome window.
+
+```bash
+gsap-video-export <url> --headless false
+```
+
 ## FAQ
 
 **Why does my video fail with the duration error `INFINITE`?**
@@ -188,9 +311,9 @@ You can supply a custom .js file with the `--script` argument which runs before 
 
 **Why does my video not render as expected?**
 
-`gsap-video-export` works by stepping manually through the specified timeline exporting each individual frame. As a rule of thumb if you can scrub through your timeline manually you're not going to have any issues.
+`gsap-video-export` works by stepping manually through the specified timeline exporting each individual frame. As a rule of thumb if you can scrub through your timeline manually in GSAP you're not going to have any issues with the default `gsap` frame advance method. 
 
-If you're triggering animations that are not locked to the timeline then this might not be the right tool for the job. 
+If you're triggering animations that are not locked to the GSAP timeline, or your page contains other active elements such as video then try the `timeweb` frame advance method, which instead overwrites native time handling in a web page to allow the capture of each frame.
 
 **Why does my timeline fail?**
 
@@ -202,12 +325,13 @@ Consider moving your timeline to a scope the tool can access.
 ## Sponsors
 
 If you find this project useful please considering sponsoring me on [GitHub Sponsors](https://github.com/sponsors/workeffortwaste/) and help support the work that goes into creating and maintaining my projects.
+
 ### Bonus
 
 Sponsors are able to remove the project support message from all my CLI projects, as well as access other additional perks.
 
 ## Author
 
-Chris Johnson - [defaced.dev](https://defaced.dev) - [@defaced](http://twitter.co.uk/defaced/)
+Chris Johnson - [defaced.dev](https://defaced.dev) - [🦋defaced.dev](https://bsky.app/profile/defaced.dev)
             
 
