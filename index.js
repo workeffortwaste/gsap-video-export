@@ -27,7 +27,7 @@ import rgbHex from 'rgb-hex'
 import fs from 'fs'
 
 ffmpeg.setFfmpegPath(ffmpegPath)
-
+tmp.setGracefulCleanup() /* Better cleaup of tmp files */
 /* Colors */
 const colors = {
   dim: '\x1b[2m',
