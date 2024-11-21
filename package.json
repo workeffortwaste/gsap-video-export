@@ -1,6 +1,6 @@
 {
   "name": "gsap-video-export",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Export GreenSock (GSAP) animation to video.",
   "main": "index.js",
   "type": "module",
