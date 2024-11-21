@@ -13,6 +13,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 - [gsap-video-export](#gsap-video-export)
   - [Contents](#contents)
   - [What's New](#whats-new)
+    - [2.0.1 🆕](#201-)
     - [2.0.0 🆕](#200-)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
@@ -28,6 +29,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
     - [Coloured Background](#coloured-background)
     - [Lossless\* Export](#lossless-export)
     - [Timeweb Frame Advancement 🆕](#timeweb-frame-advancement-)
+    - [Alpha Transparency 🆕](#alpha-transparency-)
   - [Advanced](#advanced)
     - [Cookies 🆕](#cookies-)
     - [Chrome 🆕](#chrome-)
@@ -39,6 +41,12 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 
 ## What's New
+
+### 2.0.1 🆕
+
+* Fixed an issue that was causing blocked access to public codepen URLs.
+* Support for videos with alpha transparency.
+* Improved clean up of temporary files.
 
 ### 2.0.0 🆕
 
@@ -89,8 +97,9 @@ Options:
   -r, --advance         [browser] Frame advance method                              [string] [default: "gsap"]
   -p, --color           [video] Auto padding color                                  [string] [default: "auto"]
   -c, --codec           [video] Codec                                            [string] [default: "libx264"]
+  -C, --format          [video] Format                                               [string] [default: "mp4"]
   -e, --input-options   [video] FFmpeg input options                                                  [string]
-  -E, --output-options  [video] FFmpeg output options         [string] [default: ""-pix_fmt yuv420p -crf 18""]
+  -E, --output-options  [video] FFmpeg output options         [string] [default: "'-pix_fmt yuv420p -crf 18'"]
   -o, --output          [video] Filename                                       [string] [default: "video.mp4"]
   -f, --fps             [video] Framerate                                               [number] [default: 60]
   -v, --resolution      [video] Output resolution                                   [string] [default: "auto"]
@@ -243,7 +252,7 @@ The `--output-options` `-E` argument will take a string of FFmpeg output argumen
 
 ```bash
 # Video by @cassiecodes
-gsap-video-export https://codepen.io/cassie-codes/pen/VweQjBw -S svg -z 2 -v 1920x1080 -- -E "-pix_fmt yuv420p -crf 1"
+gsap-video-export https://codepen.io/cassie-codes/pen/VweQjBw -S svg -z 2 -v 1920x1080 -- -E "'-pix_fmt yuv420p -crf 1'"
 ```
 
 https://user-images.githubusercontent.com/49479599/154278049-ae6d585b-9491-45a8-bd2a-ea1f741580e2.mp4
@@ -276,6 +285,19 @@ gsap-video-export http://nodcoding.com/ --script "./scroll.js" --advance timeweb
 In the output below the scroll timeline and other animated elements are now captured perfectly.
 
 https://github.com/user-attachments/assets/b8a5b4c6-33ab-4e56-8218-b1761ab7b1c0
+
+### Alpha Transparency 🆕
+
+`gsap-video-export` can now output video with alpha transparency when paired with compatible ffmpeg settings. 
+
+Setting the `--color` argument to `transparent` will pad the video with transparent pixels `gsap-video-export` will also respect transparent backgrounds.
+
+> There should be no `background-color` set on the <body> for `gsap-video-export` to correctly render transparency.
+
+```bash
+gsap-video-export https://codepen.io/defaced/pen/GRVbwNQ -S svg -v 1080x1080 -o video.mov -p transparent -c prores_ks -C mov -- -E "'-pix_fmt yuva444p10le'"
+```
+The important part of the command is `-o video.mov -p transparent -c prores_ks -C mov -- -E "'-pix_fmt yuva444p10le'"` which sets ffmpeg to use a video format that's compatible with transparency and tells `gsap-video-export` to respect transparent backgrounds.
 
 ## Advanced
 
