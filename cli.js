@@ -46,7 +46,7 @@ const _yargs = yargs(hideBin(process.argv))
 /* CLI arguments config */
 const options = _yargs
   .wrap(Math.min(110, _yargs.terminalWidth()))
-  .default({ r: 'gsap', p: 'auto', c: 'libx264', o: 'video.mp4', t: 'gsap', f: 60, S: 'document', z: 1, V: '1920x1080', v: 'auto', E: '"-pix_fmt yuv420p -crf 18"', q: true, h: true, chrome: false })
+  .default({ C: 'mp4', r: 'gsap', p: 'auto', c: 'libx264', o: 'video.mp4', t: 'gsap', f: 60, S: 'document', z: 1, V: '1920x1080', v: 'auto', E: '"-pix_fmt yuv420p -crf 18"', q: true, h: true, chrome: false })
   .usage('$0 <url>', 'Export GreenSock (GSAP) animation to video')
   .describe('s', '[browser] Custom script')
   .describe('S', '[browser] DOM selector')
@@ -62,6 +62,7 @@ const options = _yargs
   .describe('h', '[browser] Headless mode')
   .describe('p', '[video] Auto padding color')
   .describe('c', '[video] Codec')
+  .describe('C', '[video] Format')
   .describe('e', '[video] FFmpeg input options')
   .describe('E', '[video] FFmpeg output options')
   .describe('o', '[video] Filename')
@@ -73,6 +74,7 @@ const options = _yargs
   .alias('t', 'timeline')
   .alias('f', 'fps')
   .alias('c', 'codec')
+  .alias('C', 'format')
   .alias('S', 'selector')
   .alias('s', 'script')
   .alias('z', 'scale')
@@ -86,7 +88,7 @@ const options = _yargs
   .alias('h', 'headless')
   .number(['f', 'z'])
   .boolean(['i', 'q', 'h', 'chrome'])
-  .string(['e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p', 'cookies', 'advance'])
+  .string(['C', 'e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p', 'cookies', 'advance'])
   .epilogue('For more information visit documentation at: \nhttp://github.com/workeffortwaste/gsap-video-export')
   .argv
 

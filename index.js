@@ -480,7 +480,7 @@ const videoExport = async (options) => {
     const el = options.selector === 'document' ? page : await page.$(options.selector)
 
     /* Take a screenshot */
-    await el.screenshot({ path: tmpobj.name + '/' + frameStep + '.png' })
+    await el.screenshot({ path: tmpobj.name + '/' + frameStep + '.png', omitBackground: options.color === 'transparent' })
 
     /* Increment and update the CLI export progress bar */
     if (options.verbose) b1.increment()
@@ -517,12 +517,12 @@ const videoExport = async (options) => {
   const finalResolution = options.resolution === 'auto' ? `${image.width}x${image.height}` : options.resolution
 
   /* Pad color */
-  const padColor = options.color === 'auto' ? image.pixelSample : options.color
+  const padColor = options.color === 'auto' ? image.pixelSample : options.color !== 'transparent' ? options.color : '0x00000000'
 
   /* Add some more information about the video we're making */
   log('\n', options.verbose)
   log(padCenter('Output resolution', `${options.resolution === 'auto' ? '(auto) ' : ''}${finalResolution}`), options.verbose)
-  log(padCenter('Padding color', `${options.color === 'auto' ? '(auto) ' : ''}#${padColor.toUpperCase()}`), options.verbose)
+  log(padCenter('Padding color', `${options.color === 'auto' ? '(auto) ' : ''}${padColor.toUpperCase()}`), options.verbose)
 
   /* Timing vars */
   let timeRender, timeRenderStop
@@ -535,7 +535,7 @@ const videoExport = async (options) => {
       .inputFPS(options.fps)
       .size(finalResolution)
       .autopad(padColor)
-      .format('mp4')
+      .format(options.format)
       .output(options.output)
       .on('start', function (commandLine) {
         log('\nRendering video\n', options.verbose)
