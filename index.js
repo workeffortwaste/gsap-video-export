@@ -186,10 +186,10 @@ const urlHelper = (url) => {
   if (url.includes('//codepen.io/')) {
     /* Use regex groups to reformat the URL */
     const regex = /\/\/codepen.io\/(.*?)\/pen\/(.*?)$/g
-    const [match,, id] = regex.exec(url)
+    const [match, user, id] = regex.exec(url)
 
     /* Return the debug codepen url if a match is found */
-    return match ? `https://cdpn.io/pen/debug/${id}` : url
+    return match ? `https://codepen.io/${user}/fullpage/${id}` : url
   }
 
   /* Return the url as is without modification */
@@ -297,6 +297,7 @@ const videoExport = async (options) => {
   /* Navigate to the specified URL and wait for all resources to load */
   try {
     await page.goto(urlHelper(options.url), { waitUntil: 'networkidle0' })
+    await page.goto(urlHelper(options.url), { waitUntil: 'networkidle0', referer: new URL(options.url).origin })
   } catch (err) {
     log(padCenter('Browser', 'FAIL', true), options.verbose)
     if (options.cli) {
