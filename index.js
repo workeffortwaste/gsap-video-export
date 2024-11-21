@@ -189,7 +189,7 @@ const urlHelper = (url) => {
     const [match, user, id] = regex.exec(url)
 
     /* Return the debug codepen url if a match is found */
-    return match ? `https://codepen.io/${user}/fullpage/${id}` : url
+    return match ? `https://cdpn.io/${user}/fullpage/${id}/?anon=true&view=` : url
   }
 
   /* Return the url as is without modification */
