@@ -359,6 +359,6 @@ Sponsors are able to remove the project support message from all my CLI projects
 
 ## Author
 
-Chris Johnson - [defaced.dev](https://defaced.dev) - [🦋defaced.dev](https://bsky.app/profile/defaced.dev)
+Chris Johnson - [defaced.dev](https://defaced.dev) - [ꕤdefaced.dev](https://bsky.app/profile/defaced.dev)
             
 
