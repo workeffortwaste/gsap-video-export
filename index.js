@@ -296,7 +296,6 @@ const videoExport = async (options) => {
 
   /* Navigate to the specified URL and wait for all resources to load */
   try {
-    await page.goto(urlHelper(options.url), { waitUntil: 'networkidle0' })
     await page.goto(urlHelper(options.url), { waitUntil: 'networkidle0', referer: new URL(options.url).origin })
   } catch (err) {
     log(padCenter('Browser', 'FAIL', true), options.verbose)
