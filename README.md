@@ -206,7 +206,7 @@ To render your video at the desired resolution use the `--resolution` `-v` argum
 
 ```bash
 # Video by @cassiecodes
-https://codepen.io/cassie-codes/pen/mNWxpL -S svg -v 1080x1080
+gsap-video-export https://codepen.io/cassie-codes/pen/mNWxpL -S svg -v 1080x1080
 ```
 
 The example above will select the `SVG` element on the page, with the resulting video resized and automatically padded to `1080x1080`.
@@ -217,7 +217,7 @@ Using the `--scale` `-z` you can supply a scale factor allowing you to capture t
 
 ```bash
 # Video by @cassiecodes
-https://codepen.io/cassie-codes/pen/mNWxpL -S svg -v 1080x1080 -z 2
+gsap-video-export https://codepen.io/cassie-codes/pen/mNWxpL -S svg -v 1080x1080 -z 2
 ```
 
 https://user-images.githubusercontent.com/49479599/154277921-0c5dfb39-9012-43c8-ac76-416a95c9bab0.mp4
@@ -230,7 +230,7 @@ https://user-images.githubusercontent.com/49479599/154277921-0c5dfb39-9012-43c8-
 
 ```bash
 # Video by @cassiecodes
-https://codepen.io/cassie-codes/pen/VwZBjRq -S svg -z 2 -v 1080x1080
+gsap-video-export https://codepen.io/cassie-codes/pen/VwZBjRq -S svg -z 2 -v 1080x1080
 ```
 
 https://user-images.githubusercontent.com/49479599/154277938-1db498b8-661b-4772-ad56-a50964d5c93e.mp4
@@ -239,11 +239,11 @@ https://user-images.githubusercontent.com/49479599/154277938-1db498b8-661b-4772-
 
 >*When creating a video with the true lossless setting `-crf 0` it will preserve the colour space of the source PNGs and won't be compatible with some media players. <br><br>For compatibility simply setting the best lossy setting `-crf 1` is enough to create a near lossless video that's compatible with most media players.
 
-The `--output-options` `-E` argument will take a *double quoted string* of FFmpeg output arguments to allow a lot of flexability over the final render.
+The `--output-options` `-E` argument will take a string of FFmpeg output arguments to allow a lot of flexability over the final render. This should be supplied last in the list of command line arguments after `--`.
 
 ```bash
 # Video by @cassiecodes
-gsap-video-export https://codepen.io/cassie-codes/pen/VweQjBw -S svg -z 2 -v 1920x1080 -E '"-pix_fmt yuv420p -crf 1"'
+gsap-video-export https://codepen.io/cassie-codes/pen/VweQjBw -S svg -z 2 -v 1920x1080 -- -E "-pix_fmt yuv420p -crf 1"
 ```
 
 https://user-images.githubusercontent.com/49479599/154278049-ae6d585b-9491-45a8-bd2a-ea1f741580e2.mp4
