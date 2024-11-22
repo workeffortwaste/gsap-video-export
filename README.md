@@ -13,6 +13,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 - [gsap-video-export](#gsap-video-export)
   - [Contents](#contents)
   - [What's New](#whats-new)
+    - [2.0.2 🆕](#202-)
     - [2.0.1 🆕](#201-)
     - [2.0.0 🆕](#200-)
   - [Getting Started](#getting-started)
@@ -41,6 +42,10 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 
 ## What's New
+
+### 2.0.2 🆕
+
+* When used an ESM module the additional script can now be passed as a function as well as string pointing to an external js file.
 
 ### 2.0.1 🆕
 
