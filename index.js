@@ -310,12 +310,25 @@ const videoExport = async (options) => {
   log(padCenter('Browser', 'OK'), options.verbose)
 
   /* If a custom script is specified and exists */
-  if (options.script && fs.existsSync(options.script)) {
-    /* Load the script */
-    const customScript = fs.readFileSync(options.script, 'utf8')
+  if (options.script) {
+    let customScript
+
+    if (typeof options.script === 'function') {
+      customScript = options.script
+    } else {
+      if (!fs.existsSync(options.script)) {
+        await dirtyExit(browser, 'The specified script does not exist')
+      }
+      /* Load the script */
+      customScript = fs.readFileSync(options.script, 'utf8')
+    }
     /* Run the script within the page context */
     try {
-      await page.evaluate(customScript => { eval(customScript) }, customScript)
+      if (typeof customScript === 'function') {
+        await page.evaluate(customScript)
+      } else {
+        await page.evaluate(customScript => { eval(customScript) }, customScript)
+      }
     } catch (err) {
       if (options.cli) {
         await cleanExit(browser)
