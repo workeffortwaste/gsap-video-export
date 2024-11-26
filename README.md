@@ -13,16 +13,16 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 - [gsap-video-export](#gsap-video-export)
   - [Contents](#contents)
   - [What's New](#whats-new)
-    - [2.0.3](#203)
+    - [2.0.3 🆕](#203-)
     - [2.0.2 🆕](#202-)
     - [2.0.1 🆕](#201-)
     - [2.0.0 🆕](#200-)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
-    - [Command Line](#command-line)
-      - [Options](#options)
-    - [ESM Module 🆕](#esm-module-)
-      - [Options](#options-1)
+    - [Usage](#usage)
+      - [Command Line](#command-line)
+      - [ESM Module 🆕](#esm-module-)
+    - [Options](#options)
   - [Examples](#examples)
     - [Page Export](#page-export)
     - [Custom Timeline](#custom-timeline)
@@ -44,7 +44,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 ## What's New
 
-### 2.0.3
+### 2.0.3 🆕
 
 * Added `prepare-page` and `prepare-frame` options, allowing a script to be run once at page load or before each frame.
 * Removed references to Twitter.
@@ -79,8 +79,9 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 npm install -g gsap-video-export
 ```
 
+### Usage
 
-### Command Line
+#### Command Line
 
 Once installed the tool can be used as per the following example.
 
@@ -90,39 +91,7 @@ gsap-video-export <url>
 
 > When using CodePen URLs `gsap-video-export` will automatically redirect to the full page debug preview.
 
-#### Options
-
-```
-Options:
-      --help                    Show help                                                            [boolean]
-      --version                 Show version number                                                  [boolean]
-  -s, --prepare-page, --script  [browser] Custom script (Page)                                        [string]
-      --prepare-frame           [browser] Custom script (Frame)                                       [string]
-  -S, --selector                [browser] DOM selector                          [string] [default: "document"]
-  -t, --timeline                [browser] GSAP timeline object                      [string] [default: "gsap"]
-  -z, --scale                   [browser] Scale factor                                   [number] [default: 1]
-  -V, --viewport                [browser] Viewport size                        [string] [default: "1920x1080"]
-  -i, --info                    [browser] Info only                                                  [boolean]
-      --frame-start             [browser] Start frame                                                 [number]
-      --frame-end               [browser] End frame                                                   [number]
-      --chrome                  [browser] Use the system installed Chrome           [boolean] [default: false]
-      --cookies                 [browser] Cookie JSON file                                            [string]
-  -a, --advance                 [browser] Frame advance method                                        [string]
-  -h, --headless                [browser] Headless mode                              [boolean] [default: true]
-  -p, --color                   [video] Auto padding color                          [string] [default: "auto"]
-  -c, --codec                   [video] Codec                                    [string] [default: "libx264"]
-  -C, --format                  [video] Format                                       [string] [default: "mp4"]
-  -e, --input-options           [video] FFmpeg input options                                          [string]
-  -E, --output-options          [video] FFmpeg output options [string] [default: ""-pix_fmt yuv420p -crf 18""]
-  -o, --output                  [video] Filename                               [string] [default: "video.mp4"]
-  -f, --fps                     [video] Framerate                                       [number] [default: 60]
-  -v, --resolution              [video] Output resolution                           [string] [default: "auto"]
-  -q, --verbose                 [tool] Verbose output                                [boolean] [default: true]
-  -r                                                                                         [default: "gsap"]
-  ```
-
-
-### ESM Module 🆕
+#### ESM Module 🆕
 
 This library can now be imported as an ESM module, opening up `gsap-video-export` to be used seamlessly as part of a production pipeline.
 
@@ -163,9 +132,36 @@ console.log(videoDetails)
  */
 ```
 
-#### Options
+### Options
 
-All options available via the Command Line tool are exposed as an option in the ESM module using their long name.
+All additional options are available when used as a module or via the CLI.
+
+| **CLI Argument**                   | **Module Option**       | **Category** | **Description**                                   | **Type**             | **Default Value**            |
+| ---------------------------------- | ----------------------- | ------------ | ------------------------------------------------- | -------------------- | ---------------------------- |
+| `--help`                           |                         | General      | Show help                                         | `boolean`            |                              |
+| `--version`                        |                         | General      | Show version number                               | `boolean`            |                              |
+| `-q`, `--verbose`                  | `verbose`               | General      | Verbose output.                                   | `boolean`            | `true`                       |
+| `-i`, `--info`                     | `info`                  | General      | Information only.                                 | `boolean`            |      `false`                        |
+| `-s`, `--prepare-page`, `--script` | `preparePage`, `script` | Browser      | Custom script to run once on page load.           | `string`, `function` |                              |
+| `--prepare-frame`                  | `prepareFrame`          | Browser      | Custom script to run before every frame.          | `string`, `function` |                              |
+| `-S`, `--selector`                 | `selector`              | Browser      | DOM selector of element to capture.               | `string`             | `"document"`                 |
+| `-t`, `--timeline`                 | `timeline`              | Browser      | GSAP timeline object.                             | `string`             | `"gsap"`                     |
+| `-z`, `--scale`                    | `scale`                 | Browser      | Scale factor for higher quality capture.          | `number`             | `1`                          |
+| `-V`, `--viewport`                 | `viewport`              | Browser      | Browser viewport size.                            | `string`             | `"1920x1080"`                |
+| `--frame-start`                    | `frameStart`            | Browser      | The frame number to begin capturing.              | `number`             |                              |
+| `--frame-end`                      | `frameEnd`              | Browser      | The frame number to stop capturing.               | `number`             |                              |
+| `--chrome`                         | `chrome`                | Browser      | Automatically use the system installed Chrome.    | `boolean`            | `false`                      |
+| `--cookies`                        | `cookies`               | Browser      | Cookie JSON file in a Puppeteer supported format. | `string`             |                              |
+| `-a`, `--advance`                  | `advance`               | Browser      | The method to use for advancing frames.           | `string`             | `gsap`                       |
+| `-h`, `--headless`                 | `headless`              | Browser      | Headless mode.                                    | `boolean`            | `true`                       |
+| `-p`, `--color`                    | `color`                 | Video        | Padding color.                                    | `string`             | `"auto"`                     |
+| `-c`, `--codec`                    | `codec`                 | Video        | Video codec.                                      | `string`             | `"libx264"`                  |
+| `-C`, `--format`                   | `format`                | Video        | Video format.                                     | `string`             | `"mp4"`                      |
+| `-e`, `--input-options`            | `inputOptions`          | Video        | Additional FFmpeg input options.                  | `string`             |                              |
+| `-E`, `--output-options`           | `outputOptions`         | Video        | Additional FFmpeg output options.                 | `string`             | `"-pix_fmt yuv420p -crf 18"` |
+| `-o`, `--output`                   | `output`                | Video        | Output filename.                                  | `string`             | `"video.mp4"`                |
+| `-f`, `--fps`                      | `fps`                   | Video        | Target framerate.                                 | `number`             | `60`                         |
+| `-v`, `--resolution`               | `resolution`            | Video        | Output resolution.                                | `string`             | `"auto"`                     |
 
 ## Examples
 
