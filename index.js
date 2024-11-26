@@ -311,17 +311,17 @@ const videoExport = async (options) => {
   log(padCenter('Browser', 'OK'), options.verbose)
 
   /* If a custom script is specified and exists */
-  if (options.script) {
+  if (options.preparePage) {
     let customScript
 
-    if (typeof options.script === 'function') {
-      customScript = options.script
+    if (typeof options.preparePage === 'function') {
+      customScript = options.preparePage
     } else {
-      if (!fs.existsSync(options.script)) {
+      if (!fs.existsSync(options.preparePage)) {
         await dirtyExit(browser, 'The specified script does not exist')
       }
       /* Load the script */
-      customScript = fs.readFileSync(options.script, 'utf8')
+      customScript = fs.readFileSync(options.preparePage, 'utf8')
     }
     /* Run the script within the page context */
     try {
@@ -475,6 +475,41 @@ const videoExport = async (options) => {
   /* The recording loop */
   for (let x = startFrame; x < endFrame; x++) {
     const frame = x / duration
+
+    /* If a custom frame script is specified and exists */
+    if (options.prepareFrame) {
+      let customScript
+
+      if (typeof options.prepareFrame === 'function') {
+        customScript = options.prepareFrame
+      } else {
+        if (!fs.existsSync(options.prepareFrame)) {
+          await dirtyExit(browser, 'The specified script does not exist')
+        }
+        /* Load the script */
+        customScript = fs.readFileSync(options.prepareFrame, 'utf8')
+      }
+
+      /* Prepare additional details to send through to the script about the current animation state */
+      const details = {
+        frame, frameStep, fps: options.fps, startFrame, endFrame, duration, ms: (1000 / options.fps) * frameStep + 1
+      }
+
+      /* Run the script within the page context */
+      try {
+        if (typeof customScript === 'function') {
+          await page.evaluate(customScript, details)
+        } else {
+          await page.evaluate((customScript, details) => { eval(customScript) }, customScript, details)
+        }
+      } catch (err) {
+        if (options.cli) {
+          await cleanExit(browser)
+        } else {
+          await dirtyExit(browser, 'Unable to run the specified script: ' + err)
+        }
+      }
+    }
 
     /* Progress the timeline to the specified frame */
     if (options.advance === 'gsap') {
