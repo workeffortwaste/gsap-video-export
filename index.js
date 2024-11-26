@@ -103,7 +103,7 @@ const discoverSelector = (selector) => {
  */
 const animationProgressFrame = (timeline, frame) => {
   let _eval = false
-  try { _eval = eval(timeline) } catch {}
+  try { _eval = eval(timeline) } catch { }
   // eslint-disable-next-line no-undef
   const _tl = timeline === 'gsap' ? gsap.globalTimeline : _eval
   _tl.pause()
@@ -117,7 +117,7 @@ const animationProgressFrame = (timeline, frame) => {
  */
 const animationDurationSeconds = (timeline) => {
   let _eval = false
-  try { _eval = eval(timeline) } catch {}
+  try { _eval = eval(timeline) } catch { }
   // eslint-disable-next-line no-undef
   const _tl = timeline === 'gsap' ? gsap.globalTimeline : _eval
   if (!_tl) return { error: 'No timeline found.' }
@@ -133,7 +133,7 @@ const animationDurationSeconds = (timeline) => {
  */
 const animationDurationFrames = (timeline, fps) => {
   let _eval = false
-  try { _eval = eval(timeline) } catch {}
+  try { _eval = eval(timeline) } catch { }
   // eslint-disable-next-line no-undef
   const _tl = timeline === 'gsap' ? gsap.globalTimeline : _eval
   if (!_tl) return { error: 'No timeline found.' }
@@ -159,7 +159,7 @@ const discoverGsapFramework = () => {
  */
 const discoverTimeline = (timeline) => {
   let _eval = false
-  try { _eval = eval(timeline) } catch {}
+  try { _eval = eval(timeline) } catch { }
   // eslint-disable-next-line no-undef
   const _tl = timeline === 'gsap' ? gsap.globalTimeline : _eval
   if (_tl) return true
