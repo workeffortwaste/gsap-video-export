@@ -2,7 +2,7 @@
 /**
  * gsap-video-export
  * github: workeffortwaste
- * twitter: @defaced
+ * bluesky: @defaced.dev
  *
  * Source: https://github.com/workeffortwaste/gsap-video-export/
  */
@@ -25,7 +25,7 @@ const colors = {
 
 /* CLI welcome message */
 const { version } = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url)))
-console.log(`gsap-video-export ${version} / ${colors.blue}@defaced${colors.reset}`)
+console.log(`gsap-video-export ${version} / ${colors.blue}@defaced.dev (bluesky)${colors.reset}`)
 
 /* Support */
 if (!process.env.WORKEFFORTWASTE_SUPPORTER) {

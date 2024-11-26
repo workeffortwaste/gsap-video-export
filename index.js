@@ -2,7 +2,7 @@
 /**
  * gsap-video-export
  * github: workeffortwaste
- * twitter: @defaced
+ * bluesky: @defaced.dev
  *
  * Source: https://github.com/workeffortwaste/gsap-video-export/
  */
