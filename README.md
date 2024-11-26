@@ -13,6 +13,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 - [gsap-video-export](#gsap-video-export)
   - [Contents](#contents)
   - [What's New](#whats-new)
+    - [2.0.3](#203)
     - [2.0.2 🆕](#202-)
     - [2.0.1 🆕](#201-)
     - [2.0.0 🆕](#200-)
@@ -42,6 +43,12 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 
 ## What's New
+
+### 2.0.3
+
+* Added `prepare-page` and `prepare-frame` options, allowing a script to be run once at page load or before each frame.
+* Removed references to Twitter.
+* Fixed the missing default video format when used as an ESM module.
 
 ### 2.0.2 🆕
 
