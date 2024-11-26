@@ -46,7 +46,7 @@ const _yargs = yargs(hideBin(process.argv))
 /* CLI arguments config */
 const options = _yargs
   .wrap(Math.min(110, _yargs.terminalWidth()))
-  .default({ C: 'mp4', r: 'gsap', p: 'auto', c: 'libx264', o: 'video.mp4', t: 'gsap', f: 60, S: 'document', z: 1, V: '1920x1080', v: 'auto', E: '"-pix_fmt yuv420p -crf 18"', q: true, h: true, chrome: false })
+  .default({ C: 'mp4', a: 'gsap', p: 'auto', c: 'libx264', o: 'video.mp4', t: 'gsap', f: 60, S: 'document', z: 1, V: '1920x1080', v: 'auto', E: '"-pix_fmt yuv420p -crf 18"', q: true, h: true, chrome: false })
   .usage('$0 <url>', 'Export GreenSock (GSAP) animation to video')
   .describe('s', '[browser] Custom script (Page)')
   .describe('prepare-frame', '[browser] Custom script (Frame)')
