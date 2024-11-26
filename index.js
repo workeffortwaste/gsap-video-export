@@ -254,6 +254,7 @@ const videoExport = async (options) => {
   options.timeline = options.timeline || 'gsap'
   options.chrome = options.chrome !== undefined ? options.chrome : false
   options.cookies = options.cookies || null
+  options.format = options.format || 'mp4'
 
   /* Explode viewport resolutions */
   const resolutions = {
