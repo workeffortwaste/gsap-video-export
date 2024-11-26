@@ -311,6 +311,7 @@ const videoExport = async (options) => {
   log(padCenter('Browser', 'OK'), options.verbose)
 
   /* If a custom script is specified and exists */
+  if (options.script) options.preparePage = options.script 
   if (options.preparePage) {
     let customScript
 
