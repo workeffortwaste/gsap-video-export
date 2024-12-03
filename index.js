@@ -290,7 +290,7 @@ const videoExport = async (options) => {
   if (options.advance === 'timeweb') {
     /* Load the script */
     const timeweb = fs.readFileSync('./node_modules/timeweb/dist/timeweb.js', 'utf8')
-    log(timeweb, options.verbose)
+
     /* Run the script within the page context */
     await page.evaluateOnNewDocument(timeweb => { eval(timeweb) }, timeweb)
   }
