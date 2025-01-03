@@ -50,6 +50,7 @@ const options = _yargs
   .usage('$0 <url>', 'Export GreenSock (GSAP) animation to video')
   .describe('s', '[browser] Custom script (Page)')
   .describe('prepare-frame', '[browser] Custom script (Frame)')
+  .describe('post-process', '[browser] Custom script (Post Process)')
   .describe('S', '[browser] DOM selector')
   .describe('t', '[browser] GSAP timeline object')
   .describe('z', '[browser] Scale factor')

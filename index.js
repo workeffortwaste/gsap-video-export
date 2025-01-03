@@ -311,7 +311,7 @@ const videoExport = async (options) => {
   log(padCenter('Browser', 'OK'), options.verbose)
 
   /* If a custom script is specified and exists */
-  if (options.script) options.preparePage = options.script 
+  if (options.script) options.preparePage = options.script
   if (options.preparePage) {
     let customScript
 
@@ -529,8 +529,48 @@ const videoExport = async (options) => {
     /* Select the DOM element via the specified selector */
     const el = options.selector === 'document' ? page : await page.$(options.selector)
 
-    /* Take a screenshot */
-    await el.screenshot({ path: tmpobj.name + '/' + frameStep + '.png', omitBackground: options.color === 'transparent' })
+    /* If we're not supplying a post processor script then we can just take a screenshot and save it */
+    if (!options.postProcess) await el.screenshot({ path: tmpobj.name + '/' + frameStep + '.png', omitBackground: options.color === 'transparent' })
+
+    /* Otherwise we need to take a screenshot and then run the post processor script */
+    if (options.postProcess) {
+      /* Take a screenshot */
+      const screenshot = await el.screenshot({ omitBackground: options.color === 'transparent' })
+
+      /* If a custom frame script is specified and exists */
+      let customScript
+
+      if (typeof options.postProcess === 'function') {
+        customScript = options.postProcess
+      } else {
+        if (!fs.existsSync(options.postProcess)) {
+          await dirtyExit(browser, 'The specified script does not exist')
+        }
+        /* Load the script */
+        customScript = fs.readFileSync(options.postProcess, 'utf8')
+      }
+
+      const screenshotBuffer = Buffer.from(screenshot, 'base64')
+
+      let updatedScreenshotBuffer
+      try {
+        if (typeof customScript === 'function') {
+          updatedScreenshotBuffer = await customScript(screenshotBuffer)
+        } else {
+          // eslint-disable-next-line no-new-func
+          updatedScreenshotBuffer = await (new Function('imageBuffer', customScript))(screenshotBuffer)
+        }
+
+        /* Write the updated screenshot to the tmp directory */
+        fs.writeFileSync(tmpobj.name + '/' + frameStep + '.png', updatedScreenshotBuffer)
+      } catch (err) {
+        if (options.cli) {
+          await cleanExit(browser)
+        } else {
+          await dirtyExit(browser, 'Unable to run the specified script: ' + err)
+        }
+      }
+    }
 
     /* Increment and update the CLI export progress bar */
     if (options.verbose) b1.increment()

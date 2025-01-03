@@ -13,6 +13,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 - [gsap-video-export](#gsap-video-export)
   - [Contents](#contents)
   - [What's New](#whats-new)
+    - [2.1.0 🆕](#210-)
     - [2.0.3 🆕](#203-)
     - [2.0.2 🆕](#202-)
     - [2.0.1 🆕](#201-)
@@ -32,6 +33,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
     - [Lossless\* Export](#lossless-export)
     - [Timeweb Frame Advancement 🆕](#timeweb-frame-advancement-)
     - [Alpha Transparency 🆕](#alpha-transparency-)
+    - [Post Processing 🆕](#post-processing-)
   - [Advanced](#advanced)
     - [Cookies 🆕](#cookies-)
     - [Chrome 🆕](#chrome-)
@@ -43,6 +45,10 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 
 ## What's New
+
+### 2.1.0 🆕
+
+* Added a `post-process` option, allowing a script to modify the image buffer before it's saved to temp storage.
 
 ### 2.0.3 🆕
 
@@ -141,9 +147,10 @@ All additional options are available when used as a module or via the CLI.
 | `--help`                           |                         | General      | Show help                                         | `boolean`            |                              |
 | `--version`                        |                         | General      | Show version number                               | `boolean`            |                              |
 | `-q`, `--verbose`                  | `verbose`               | General      | Verbose output.                                   | `boolean`            | `true`                       |
-| `-i`, `--info`                     | `info`                  | General      | Information only.                                 | `boolean`            |      `false`                        |
+| `-i`, `--info`                     | `info`                  | General      | Information only.                                 | `boolean`            | `false`                      |
 | `-s`, `--prepare-page`, `--script` | `preparePage`, `script` | Browser      | Custom script to run once on page load.           | `string`, `function` |                              |
 | `--prepare-frame`                  | `prepareFrame`          | Browser      | Custom script to run before every frame.          | `string`, `function` |                              |
+| `--post-process`                   | `postProcess`           | Browser      | Custom script to modify the image buffer.         | `string`, `function` |                              |
 | `-S`, `--selector`                 | `selector`              | Browser      | DOM selector of element to capture.               | `string`             | `"document"`                 |
 | `-t`, `--timeline`                 | `timeline`              | Browser      | GSAP timeline object.                             | `string`             | `"gsap"`                     |
 | `-z`, `--scale`                    | `scale`                 | Browser      | Scale factor for higher quality capture.          | `number`             | `1`                          |
@@ -309,6 +316,31 @@ Setting the `--color` argument to `transparent` will pad the video with transpar
 gsap-video-export https://codepen.io/defaced/pen/GRVbwNQ -S svg -v 1080x1080 -o video.mov -p transparent -c prores_ks -C mov -- -E "'-pix_fmt yuva444p10le'"
 ```
 The important part of the command is `-o video.mov -p transparent -c prores_ks -C mov -- -E "'-pix_fmt yuva444p10le'"` which sets ffmpeg to use a video format that's compatible with transparency and tells `gsap-video-export` to respect transparent backgrounds.
+
+### Post Processing 🆕
+
+`gsap-video-export` now lets you modify the image buffer of each frame before it is saved to disk using the `post-processs` option. `post-process` supplies an image buffer to your function and expects you to return one.
+
+Here's an example that dithers each frame with a CGA palette.
+
+```javascript
+import { videoExport } from 'gsap-video-export'
+import DitherJS from 'ditherjs/server.js'
+
+const dither = new DitherJS({
+  step: 6,
+  algorithm: 'diffusion'
+})
+
+await videoExport({
+  url: 'https://codepen.io/cassie-codes/pen/eYzOBGq',
+  selector: 'svg',
+  scale: 2,
+  postProcess: async (buffer) => { return dither.dither(buffer) }
+})
+```
+
+https://github.com/user-attachments/assets/467c6a87-e3d1-459d-99be-928d8749026e
 
 ## Advanced
 
