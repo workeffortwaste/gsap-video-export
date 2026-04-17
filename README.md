@@ -13,6 +13,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 - [gsap-video-export](#gsap-video-export)
   - [Contents](#contents)
   - [What's New](#whats-new)
+    - [2.1.1 🆕](#211-)
     - [2.1.0 🆕](#210-)
     - [2.0.3 🆕](#203-)
     - [2.0.2 🆕](#202-)
@@ -34,6 +35,7 @@ What makes `gsap-video-export` different from other solutions is rather than sim
     - [Timeweb Frame Advancement 🆕](#timeweb-frame-advancement-)
     - [Alpha Transparency 🆕](#alpha-transparency-)
     - [Post Processing 🆕](#post-processing-)
+    - [Frames Only Export 🆕](#frames-only-export-)
   - [Advanced](#advanced)
     - [Cookies 🆕](#cookies-)
     - [Chrome 🆕](#chrome-)
@@ -45,6 +47,10 @@ What makes `gsap-video-export` different from other solutions is rather than sim
 
 
 ## What's New
+
+### 2.1.1 🆕
+
+* Added a `--frames-only` option to export raw PNG frames without video encoding.
 
 ### 2.1.0 🆕
 
@@ -169,6 +175,7 @@ All additional options are available when used as a module or via the CLI.
 | `-o`, `--output`                   | `output`                | Video        | Output filename.                                  | `string`             | `"video.mp4"`                |
 | `-f`, `--fps`                      | `fps`                   | Video        | Target framerate.                                 | `number`             | `60`                         |
 | `-v`, `--resolution`               | `resolution`            | Video        | Output resolution.                                | `string`             | `"auto"`                     |
+| `-F`, `--frames-only`              | `framesOnly`            | Video        | Export frames as PNG to directory, skip encoding. | `string`             |                              |
 
 ## Examples
 
@@ -341,6 +348,30 @@ await videoExport({
 ```
 
 https://github.com/user-attachments/assets/467c6a87-e3d1-459d-99be-928d8749026e
+
+### Frames Only Export 🆕
+
+If you only need the raw PNG frames without encoding to video, use the `--frames-only` `-F` option with a directory path. This captures all frames and saves them as numbered PNGs, skipping the FFmpeg encoding step entirely.
+
+```bash
+gsap-video-export https://codepen.io/cassie-codes/pen/RwGEewq --frames-only ./frames
+```
+
+This will create numbered PNG files (`0.png`, `1.png`, `2.png`, ...) in the `./frames` directory.
+
+When used as an ESM module:
+
+```javascript
+import { videoExport } from 'gsap-video-export'
+
+const result = await videoExport({
+  url: '<url>',
+  framesOnly: './frames'
+})
+
+console.log(result)
+/* { frames: number, directory: string, exportTime: seconds (number) } */
+```
 
 ## Advanced
 

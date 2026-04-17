@@ -70,6 +70,7 @@ const options = _yargs
   .describe('o', '[video] Filename')
   .describe('f', '[video] Framerate')
   .describe('v', '[video] Output resolution')
+  .describe('F', '[video] Export frames as PNG only')
   .describe('q', '[tool] Verbose output')
   .alias('i', 'info')
   .alias('o', 'output')
@@ -89,9 +90,10 @@ const options = _yargs
   .alias('a', 'advance')
   .alias('q', 'verbose')
   .alias('h', 'headless')
+  .alias('F', 'frames-only')
   .number(['f', 'z', 'frame-start', 'frame-end'])
   .boolean(['i', 'q', 'h', 'chrome', 'info'])
-  .string(['C', 'e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p', 'cookies', 'advance', 'prepare-frame'])
+  .string(['C', 'e', 'E', 'S', 's', 'o', 't', 'v', 'V', 'c', 'p', 'cookies', 'advance', 'prepare-frame', 'frames-only'])
   .epilogue('For more information visit documentation at: \nhttp://github.com/workeffortwaste/gsap-video-export')
   .argv
 

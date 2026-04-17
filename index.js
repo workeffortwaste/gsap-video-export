@@ -589,6 +589,25 @@ const videoExport = async (options) => {
   /* Now we've captured all the frames quit the browser to focus on encoding the video */
   await browser.close()
 
+  /* If frames-only is set, copy frames to the specified directory and skip encoding */
+  const framesOnlyDir = options['frames-only'] || options.framesOnly
+  if (framesOnlyDir) {
+    const framesDir = path.resolve(framesOnlyDir)
+    fs.mkdirSync(framesDir, { recursive: true })
+    for (let x = 0; x < frameStep; x++) {
+      fs.copyFileSync(tmpobj.name + '/' + x + '.png', path.join(framesDir, x + '.png'))
+    }
+    log(`\n${frameStep} frames exported to ${colors.blue}${framesDir}${colors.reset}`, options.verbose)
+    if (options.cli) {
+      process.exit()
+    }
+    return {
+      frames: frameStep,
+      directory: framesDir,
+      exportTime: +((timeFramesStop[0] * 1e9 + timeFramesStop[1]) / 1e9).toFixed(2)
+    }
+  }
+
   /* Read the first frame of the animation */
   let png = PNG.sync.read(fs.readFileSync(tmpobj.name + '/0' + '.png'))
 
