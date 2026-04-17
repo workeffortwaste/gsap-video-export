@@ -1,6 +1,6 @@
 {
   "name": "gsap-video-export",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Export GreenSock (GSAP) animation to video.",
   "main": "index.js",
   "type": "module",
@@ -29,16 +29,16 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "cli-progress": "^3.12.0",
-    "eslint": "^9.15.0",
+    "eslint": "^9.39.4",
     "fluent-ffmpeg": "^2.1.3",
-    "neostandard": "^0.11.8",
+    "neostandard": "^0.13.0",
     "pngjs": "^7.0.0",
     "find-chrome-bin": "^2.0.2",
-    "puppeteer": "npm:rebrowser-puppeteer@^23.6.101",
+    "puppeteer": "npm:rebrowser-puppeteer@^24.8.1",
     "rgb-hex": "^4.1.0",
     "string-argv": "^0.3.2",
     "timeweb": "^0.3.2",
-    "tmp": "^0.2.3",
-    "yargs": "^17.7.2"
+    "tmp": "^0.2.5",
+    "yargs": "^18.0.0"
   }
 }
